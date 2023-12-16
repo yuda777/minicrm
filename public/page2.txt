@@ -1,0 +1,59 @@
+'use client'
+import React, { useState, ChangeEvent } from 'react';
+
+interface FormData {
+  input1: string;
+  input2: string;
+  input3: string;
+  input4: string;
+  // Add more fields as needed
+}
+
+const YourComponent: React.FC = () => {
+  const [data, setData] = useState<FormData>({
+    input1: '',
+    input2: '',
+    input3: '',
+    input4: '',
+    // Add more fields as needed
+  });
+  console.log(data);
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    field: keyof FormData
+  ) => {
+    setData({
+      ...data,
+      [field]: event.target.value,
+    });
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={data.input1}
+        onChange={(e) => handleChange(e, 'input1')}
+      />
+      <input
+        type="text"
+        value={data.input2}
+        onChange={(e) => handleChange(e, 'input2')}
+      />
+      <input
+        type="text"
+        value={data.input3}
+        onChange={(e) => handleChange(e, 'input3')}
+      />
+      <input
+        type="text"
+        value={data.input4}
+        onChange={(e) => handleChange(e, 'input4')}
+      />
+      {/* Add more input fields as needed */}
+    </div>
+  );
+};
+
+export default YourComponent;
