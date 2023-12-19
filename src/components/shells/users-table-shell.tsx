@@ -21,7 +21,6 @@ interface UsersTableShellProps {
 
 function colorScheme(departementCode: string) {
   const color = (departementCode) ? PositionColor.find(job => job.position.includes(departementCode)) : null
-  // const bv = (pc) ? pc.color ?? 'default' : 'default'
   return color?.color as BadgeVariant['variant']
 }
 

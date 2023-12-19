@@ -138,25 +138,6 @@ export default function UploadPage({ }) {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-              {/* <FormField
-                control={form.control}
-                name="file"
-                render={({ field }) => (
-                  <FormItem className="flex w-full flex-col gap-1.5">
-                    <FormControl>
-                      <DropzoneXlsx
-                        name="file"
-                        state={excelData}
-                        setState={setExcelData}
-                        files={files}
-                        setFiles={setFiles}
-                        setValue={form.setValue}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="file"

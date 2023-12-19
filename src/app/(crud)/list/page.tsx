@@ -4,7 +4,7 @@ import { db } from "@/db"
 import { type Position, users, type User, position } from "@/db/schema"
 import { env } from "@/env.mjs"
 import dayjs from "dayjs"
-import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
+import { ColumnBuilder, and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { UsersTableShell } from "@/components/shells/users-table-shell"
 import {
@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { alias } from "drizzle-orm/pg-core"
+import { userPositionWithSuperior } from "@/types"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -51,11 +52,11 @@ export default async function ListUserPage({
   const [column, order] =
     typeof sort === "string"
       ? (sort.split(".") as [
-        keyof User | undefined,
+        keyof userPositionWithSuperior | undefined,
         "asc" | "desc" | undefined
       ])
       : []
-  // Date range for created date
+
   const [start_date, end_date] =
     typeof date_range === "string"
       ? date_range.split("to").map((date) => dayjs(date).toDate())
@@ -67,26 +68,28 @@ export default async function ListUserPage({
     const tp2 = alias(position, 'tp2')
     const tu2 = alias(users, 'tu2')
 
+    const selectField = {
+      userId: users.userId,
+      parentId: users.parentId,
+      userName: users.name,
+      userTitleCode: tp.titleCode,
+      userTitleDesc: tp.titleDesc,
+      userDeptCode: tp.departementCode,
+      userDeptDesc: tp.departementDesc,
+      userPhoto: users.photo,
+      userEmail: users.email,
+      userPhone: users.phoneNumber,
+      userHireDate: users.hireDate,
+      userStatusActive: users.statusActive,
+      superiorTitleCode: tp2.titleCode,
+      superiorTitleDesc: tp2.titleDesc,
+      superiorDeptCode: tp2.departementCode,
+      superiorDeptDesc: tp2.departementDesc,
+      superiorName: tu2.name,
+    }
+
     const userPositionWithSuperior = await tx
-      .select({
-        userId: users.userId,
-        parentId: users.parentId,
-        userName: users.name,
-        userTitleCode: tp.titleCode,
-        userTitleDesc: tp.titleDesc,
-        userDeptCode: tp.departementCode,
-        userDeptDesc: tp.departementDesc,
-        userPhoto: users.photo,
-        userEmail: users.email,
-        userPhone: users.phoneNumber,
-        userHireDate: users.hireDate,
-        userStatusActive: users.statusActive,
-        superiorTitleCode: tp2.titleCode,
-        superiorTitleDesc: tp2.titleDesc,
-        superiorDeptCode: tp.departementCode,
-        superiorDeptDesc: tp.departementDesc,
-        superiorName: tu2.name,
-      })
+      .select(selectField)
       .from(users)
       .limit(limit)
       .offset(offset)
@@ -109,10 +112,10 @@ export default async function ListUserPage({
         )
       )
       .orderBy(
-        column && column in users
+        column
           ? order === "asc"
-            ? asc(users[column])
-            : desc(users[column])
+            ? asc(selectField[column])
+            : desc(selectField[column])
           : desc(users.createdAt)
       )
 
@@ -150,7 +153,7 @@ export default async function ListUserPage({
 
   return (
     <Card>
-      <CardHeader className="s  pace-y-1">
+      <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">User List</CardTitle>
         <CardDescription>
           Choose user name to edit

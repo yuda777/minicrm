@@ -13,6 +13,12 @@ export const dashboardConfig: DashboardConfig = {
       items: [],
     },
     {
+      title: 'Organization Chart',
+      href: '/orgchart',
+      icon: 'network',
+      items: [],
+    },
+    {
       title: 'Upload',
       href: '/upload',
       icon: 'fileup',
@@ -22,13 +28,6 @@ export const dashboardConfig: DashboardConfig = {
       title: 'Customer',
       href: '/customer',
       icon: 'customer',
-      items: [],
-    },
-
-    {
-      title: 'Organization Chart',
-      href: '/orgchart',
-      icon: 'network',
       items: [],
     },
     {

@@ -27,15 +27,12 @@ interface dataProps {
   fieldTable: string,
   collectedData: collectedDataProps[],
   setCollectedData: React.Dispatch<React.SetStateAction<collectedDataProps[]>>
-
 }
 
 export function ComboboxDemo({ fieldTable, fieldExcel, collectedData, setCollectedData }: dataProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const handleInputComp = (val: string, del: boolean = false) => {
-    // const result = value ? fieldExcel.find((data) => data === value) || "" : ""
-    // setValue(currentValue === value ? "" : currentValue)
     if (del) {
       const indexToRemove = collectedData.findIndex(item => item.table === fieldTable);
       if (indexToRemove !== -1) {
@@ -54,14 +51,6 @@ export function ComboboxDemo({ fieldTable, fieldExcel, collectedData, setCollect
     }
     setOpen(false)
   }
-
-  // React.useEffect(() => {
-  //   const handleSearch = () => {
-  //     const result = value ? fieldExcel.find((data) => data === value) || "" : ""
-  //     setValue(result);
-  //     return result
-  //   }
-  // })
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
