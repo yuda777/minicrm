@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migration:generate": "drizzle-kit generate:pg --schema=./src/db/schema.ts",
-    "migration:introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
-    "migration:deploy": "npx ts-node --files ./src/db/migrator.ts"
+    "drizzle:introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
+    "drizzle:generate": "drizzle-kit generate:pg --schema=./src/db/schema.ts",
+    "drizzle:push": "drizzle-kit push:pg",
+    "studio": "drizzle-kit studio --port 3333"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

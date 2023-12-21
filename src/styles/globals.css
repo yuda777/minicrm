@@ -29,6 +29,8 @@
     --sidemenu-foreground:214, 32%, 91%;
     --dwhite:210, 40%, 96%;
     --dwhite-foreground:215, 19%, 35%;
+    --header: 0 0% 100%;
+    --header-foreground: 224 71.4% 4.1%;
   }
 
   .dark {
@@ -58,6 +60,9 @@
     --sidemenu-foreground:214, 32%, 91%;
     --dwhite:222, 47%, 11%;
     --dwhite-foreground:215, 19%, 35%;
+    --header:219, 38%, 15%; /* 222, 47%, 11%; */
+    --header-foreground:215, 19%, 35%;
+
   }
 }
   @layer base {

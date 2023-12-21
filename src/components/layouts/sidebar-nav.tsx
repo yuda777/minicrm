@@ -34,9 +34,9 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
             >
               <span
                 className={cn(
-                  "group pl-6 flex w-full items-center border border-transparent py-1 ",
+                  "group flex w-full items-center border border-transparent py-2 pl-6 pr-2",
                   pathname === item.href
-                    ? "bg-muted font-medium text-[#E5E7EB] bg-[#0F172A]"
+                    ? "font-medium text-foreground bg-background"
                     : "text-sidemenu-foreground",
                   item.disabled && "pointer-events-none opacity-60"
                 )}

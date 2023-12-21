@@ -78,7 +78,6 @@ export default function UploadPage({ }) {
     };
     reader.readAsArrayBuffer(acceptedFiles[0]);
   }, [setExcelData]);
-  // console.log("files:", files[0].name);
   const {
     getRootProps,
     getInputProps,

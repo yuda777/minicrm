@@ -65,7 +65,7 @@ export function UsersTableShell({
         ),
         cell: ({ row }) => {
           return (
-            <Link className="flex items-center" href={`/list/${row.original.userId}`}>
+            <Link className="flex items-center py-2 px-3 rounded-sm hover:bg-accent" href={`/list/${row.original.userId}`}>
               <Avatar className="h-8 w-8 mr-2">
                 <AvatarImage
                   src={`/face/${row.original.userPhoto}`}
@@ -79,7 +79,7 @@ export function UsersTableShell({
                 <div>
                   {row.original.userName}
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-muted-foreground">
                   {row.original.userEmail}
                 </div>
               </div>

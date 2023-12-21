@@ -84,7 +84,6 @@ function useDataUser() {
 const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const { toast } = useToast()
   const { headNPos } = useDataUser();
-  console.log(headNPos.userPosition);
 
   const router = useRouter()
   const [updateImage, setUpdateImage] = React.useState<boolean>(false)
@@ -113,7 +112,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
       const fileWithPreview = Object.assign(file, {
         preview: `/face/${user?.photo}`,
       })
-      console.log(fileWithPreview);
       setFiles(fileWithPreview)
       form.setValue('photo', user?.photo);
     }
@@ -169,7 +167,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
 
 
   function onSubmit(data: Inputs) {
-    console.log("data:", data);
     const file: File | null = data.photo as unknown as File
     let fileImgName: string
     startTransition(async () => {
@@ -330,7 +327,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-full justify-start text-left font-normal",
+                              "w-full justify-start text-left font-normal bg-background",
                               !field.value && "text-muted-foreground"
                             )}
                           >

@@ -22,7 +22,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ user, children }: SiteHeaderProps) {
   const initials = ""
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 z-40 w-full border-b bg-header">
       <div className="container flex h-16 items-center">
         <div className="flext justify-start items-center">
           {children}

@@ -1,7 +1,21 @@
-import { pgTable, serial, varchar, text, timestamp, foreignKey, integer, boolean, date } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, serial, varchar, integer, date, boolean, timestamp, text } from "drizzle-orm/pg-core"
   import { sql } from "drizzle-orm"
 
 
+
+export const users = pgTable("users", {
+	userId: serial("user_id").primaryKey().notNull(),
+	name: varchar("name", { length: 100 }).notNull(),
+	positionId: integer("position_id").references(() => position.positionId, { onDelete: "cascade" } ),
+	parentId: integer("parent_id"),
+	photo: varchar("photo", { length: 100 }),
+	email: varchar("email", { length: 100 }),
+	phoneNumber: varchar("phone_number", { length: 15 }),
+	hireDate: date("hire_date"),
+	statusActive: boolean("status_active").default(true),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }),
+});
 
 export const uploadMapping = pgTable("upload_mapping", {
 	uploadMappingId: serial("upload_mapping_id").primaryKey().notNull(),
@@ -62,18 +76,4 @@ export const employeePerformance = pgTable("employee_performance", {
 	colorhex: varchar("colorhex", { length: 6 }),
 	name: varchar("name", { length: 50 }),
 	performanceScore: integer("performance_score"),
-});
-
-export const users = pgTable("users", {
-	userId: serial("user_id").primaryKey().notNull(),
-	name: varchar("name", { length: 100 }).notNull(),
-	positionId: integer("position_id"),
-	parentId: integer("parent_id"),
-	photo: varchar("photo", { length: 100 }),
-	email: varchar("email", { length: 100 }),
-	phoneNumber: varchar("phone_number", { length: 15 }),
-	hireDate: date("hire_date"),
-	statusActive: boolean("status_active").default(true),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
 });

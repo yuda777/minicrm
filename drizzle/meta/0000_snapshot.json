@@ -4,6 +4,98 @@
   "version": "5",
   "dialect": "pg",
   "tables": {
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position_id": {
+          "name": "position_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo": {
+          "name": "photo",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hire_date": {
+          "name": "hire_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_active": {
+          "name": "status_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_position_id_fkey": {
+          "name": "users_position_id_fkey",
+          "tableFrom": "users",
+          "tableTo": "position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "columnsTo": [
+            "position_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "upload_mapping": {
       "name": "upload_mapping",
       "schema": "",
@@ -100,6 +192,55 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "customer_status": {
+      "name": "customer_status",
+      "schema": "",
+      "columns": {
+        "status_id": {
+          "name": "status_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "status_name": {
+          "name": "status_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sub_status": {
+          "name": "sub_status",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_active": {
+          "name": "status_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_DATE"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_DATE"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "customer": {
       "name": "customer",
       "schema": "",
@@ -110,15 +251,9 @@
           "primaryKey": true,
           "notNull": true
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(50)",
+        "customer_name": {
+          "name": "customer_name",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
@@ -143,6 +278,12 @@
         "birth_date": {
           "name": "birth_date",
           "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_id": {
+          "name": "status_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -182,8 +323,21 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "customer_batch_upload_id_batch_upload_batch_upload_id_fk": {
-          "name": "customer_batch_upload_id_batch_upload_batch_upload_id_fk",
+        "customer_status_id_fkey": {
+          "name": "customer_status_id_fkey",
+          "tableFrom": "customer",
+          "tableTo": "customer_status",
+          "columnsFrom": [
+            "status_id"
+          ],
+          "columnsTo": [
+            "status_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "customer_batch_upload_id_fkey": {
+          "name": "customer_batch_upload_id_fkey",
           "tableFrom": "customer",
           "tableTo": "batch_upload",
           "columnsFrom": [
@@ -236,12 +390,6 @@
         "description": {
           "name": "description",
           "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "color_code": {
-          "name": "color_code",
-          "type": "varchar(10)",
           "primaryKey": false,
           "notNull": false
         },
@@ -314,98 +462,6 @@
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "users": {
-      "name": "users",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "position_id": {
-          "name": "position_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "parent_id": {
-          "name": "parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "photo": {
-          "name": "photo",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "phone_number": {
-          "name": "phone_number",
-          "type": "varchar(15)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "hire_date": {
-          "name": "hire_date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status_active": {
-          "name": "status_active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "users_position_id_position_position_id_fk": {
-          "name": "users_position_id_position_position_id_fk",
-          "tableFrom": "users",
-          "tableTo": "position",
-          "columnsFrom": [
-            "position_id"
-          ],
-          "columnsTo": [
-            "position_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     }

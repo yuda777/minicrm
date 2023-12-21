@@ -11,7 +11,11 @@ import {
   getTableConfig,
 } from 'drizzle-orm/pg-core'
 
-import { InferModelFromColumns, type InferSelectModel } from 'drizzle-orm'
+import {
+  InferModelFromColumns,
+  relations,
+  type InferSelectModel,
+} from 'drizzle-orm'
 
 export const employeePerformance = pgTable('employee_performance', {
   performanceId: serial('performance_id').primaryKey().notNull(),
@@ -25,7 +29,7 @@ export type EmployeePerformance = InferSelectModel<typeof employeePerformance>
 
 export const customer = pgTable('customer', {
   customerId: serial('customer_id').primaryKey().notNull(),
-  customerName: varchar('customer_name', { length: 50 }),
+  customerName: varchar('customer_name', { length: 100 }),
   email: varchar('email', { length: 100 }),
   phone: varchar('phone', { length: 20 }),
   address: varchar('address', { length: 255 }),
@@ -38,10 +42,18 @@ export const customer = pgTable('customer', {
     () => batchUpload.batchUploadId,
   ),
   statusActive: boolean('status_active').default(true),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }),
 })
 export type Customer = InferSelectModel<typeof customer>
+
+export const customerRelations = relations(customer, ({ one, many }) => ({
+  batch: many(batchUpload),
+  status: one(customerStatus, {
+    fields: [customer.statusId],
+    references: [customerStatus.statusId],
+  }),
+}))
 
 export const { columns } = getTableConfig(customer)
 
@@ -67,6 +79,13 @@ export const batchUpload = pgTable('batch_upload', {
 
 export type BatchUpload = InferSelectModel<typeof batchUpload>
 
+export const batchUploadRelations = relations(batchUpload, ({ one }) => ({
+  batch: one(customer, {
+    fields: [batchUpload.batchUploadId],
+    references: [customer.batchUploadId],
+  }),
+}))
+
 export const users = pgTable('users', {
   userId: serial('user_id').primaryKey().notNull(),
   name: varchar('name', { length: 100 }).notNull(),
@@ -79,9 +98,21 @@ export const users = pgTable('users', {
   phoneNumber: varchar('phone_number', { length: 15 }),
   hireDate: date('hire_date'),
   statusActive: boolean('status_active').default(true),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }),
 })
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+  parent: one(users, {
+    fields: [users.parentId],
+    references: [users.userId],
+  }),
+  children: many(users),
+  position: one(position, {
+    fields: [users.positionId],
+    references: [position.positionId],
+  }),
+}))
 
 export type User = InferSelectModel<typeof users>
 
@@ -93,9 +124,13 @@ export const position = pgTable('position', {
   departementDesc: varchar('departement_desc', { length: 50 }),
   description: text('description'),
   statusActive: boolean('status_active').default(true),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }),
 })
+
+export const usersPosition = relations(position, ({ many }) => ({
+  position: many(users),
+}))
 
 export type Position = InferSelectModel<typeof position>
 
@@ -107,6 +142,10 @@ export const customerStatus = pgTable('customer_status', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at'),
 })
+
+export const customerStatusRelation = relations(customerStatus, ({ many }) => ({
+  status: many(customer),
+}))
 
 export type CustomerStatus = InferSelectModel<typeof customerStatus>
 

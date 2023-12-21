@@ -58,6 +58,10 @@ export default {
           DEFAULT: 'hsl(var(--dwhite))',
           foreground: 'hsl(var(--dwhite-foreground))',
         },
+        header: {
+          DEFAULT: 'hsl(var(--header))',
+          foreground: 'hsl(var(--header-foreground))',
+        },
         tomato: {
           DEFAULT: 'hsl(9, 100%, 50%)', // HSL representation of tomato color
           50: 'hsl(9, 100%, 95%)',

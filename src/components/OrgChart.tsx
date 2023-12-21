@@ -31,16 +31,6 @@ const OrganizationalChart = ({ }) => {
   const { data } = useDataOrgStrct();
   const chart = new OrgChart();
   const d3Container = useRef<any>(null);
-  console.log(data);
-  const theme = window.localStorage.getItem('theme')
-
-  const handleExpandButton = (d: number) => {
-    if (chart && data && d3Container.current) {
-      chart.clearHighlighting()
-      chart.setUpToTheRootHighlighted(d).render()
-    }
-    console.log(d);
-  }
 
   useLayoutEffect(() => {
     if (data && d3Container.current) {

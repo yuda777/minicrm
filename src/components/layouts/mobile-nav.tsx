@@ -30,7 +30,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="pl-0 pr-0 bg-sidemenu text-dwhite">
+      <SheetContent side="left" className="pl-0 pr-0 bg-sidemenu ">
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10">
           <SidebarNav items={sidebarNavItems} setIsOpen={setIsOpen} />
         </ScrollArea>

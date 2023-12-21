@@ -64,7 +64,7 @@ export async function insertTables({
   //   ...customer,
   //   batchUploadId: batchUploadId,
   // }))
-  console.log(mappedData)
+  // console.log(mappedData)
   return await db.insert(customer).values(mappedData)
 }
 
