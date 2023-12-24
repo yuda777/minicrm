@@ -10,6 +10,7 @@
     "drizzle:introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
     "drizzle:generate": "drizzle-kit generate:pg --schema=./src/db/schema.ts",
     "drizzle:push": "drizzle-kit push:pg",
+    "drizzle:seed": "ts-node ./src/db/seed.ts",
     "studio": "drizzle-kit studio --port 3333"
   },
   "dependencies": {
@@ -101,6 +102,7 @@
     "postcss": "^8",
     "prettier": "^3.1.0",
     "tailwindcss": "^3.3.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

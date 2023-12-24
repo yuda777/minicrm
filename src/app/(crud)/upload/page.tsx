@@ -52,9 +52,7 @@ export default function UploadPage({ }) {
   const [isPending, startTransition] = React.useTransition()
   const { toast } = useToast()
   const router = useRouter()
-
   const headerKeys = (excelData.data.length ?? 0) > 0 ? Object.keys(excelData.data[0]) : []
-
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     const XLSXPromise = import("xlsx");
 

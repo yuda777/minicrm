@@ -36,7 +36,7 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
                 className={cn(
                   "group flex w-full items-center border border-transparent py-2 pl-6 pr-2",
                   pathname === item.href
-                    ? "font-medium text-foreground bg-background"
+                    ? "font-medium text-white bg-[#0f1729]"
                     : "text-sidemenu-foreground",
                   item.disabled && "pointer-events-none opacity-60"
                 )}

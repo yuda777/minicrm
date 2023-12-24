@@ -41,7 +41,7 @@ export async function checkUserAction(input: { name: string; id?: number }) {
   }
 }
 
-const now = new Date()
+const now = new Date().toISOString()
 export async function addNUpdateUserAction(
   input: z.infer<typeof userSchema>,
   userId?: number,

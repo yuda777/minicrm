@@ -17,18 +17,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-interface collectedDataProps {
-  table: string;
-  excel: string;
-}
 interface dataProps {
-  fieldExcel: string[],
-  fieldTable: string,
-  collectedData: collectedDataProps[],
-  setCollectedData: React.Dispatch<React.SetStateAction<collectedDataProps[]>>
+  data: string,
 }
 
-export function ComboboxDemo({ fieldTable, fieldExcel, collectedData, setCollectedData }: dataProps) {
+export function Combobox({ data }: dataProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const handleInputComp = (val: string, del: boolean = false) => {

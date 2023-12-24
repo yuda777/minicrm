@@ -18,7 +18,13 @@ import { Switch } from "@/components/ui/switch"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { Icons } from "@/components/icons"
-
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
 import {
   Popover,
   PopoverContent,
@@ -47,6 +53,7 @@ import {
   type FileRejection,
   type FileWithPath,
 } from "react-dropzone"
+import { Combobox } from '../ui/combobox2';
 type Inputs = z.infer<typeof userSchema>
 
 interface FrmInputProps {
@@ -84,7 +91,7 @@ function useDataUser() {
 const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const { toast } = useToast()
   const { headNPos } = useDataUser();
-
+  const [value, setValue] = React.useState("")
   const router = useRouter()
   const [updateImage, setUpdateImage] = React.useState<boolean>(false)
   const [files, setFiles] = React.useState<FileWithPreview | null>(null)
@@ -217,212 +224,220 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   return (
     <>
       <Form {...form}>
-        <form className='' //w-full max-w-2xl
+        <form
           onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
         >
-          <div className='grid gap-6 lg:grid-cols-2 xl:grid-cols-3'>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="positionId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Position</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={String(field.value)}
-                      onValueChange={value => field.onChange(value)}
-                    >
-                      <SelectTrigger className="capitalize">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {headNPos.userPosition?.map((val) => (
-                            <SelectItem key={val.positionId} value={String(val.positionId)}>{val.titleDesc}</SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="parentId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Superior</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={String(field.value)}
-                      onValueChange={value => field.onChange(value)}
-                    >
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder={field.value} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {headNPos.headUser?.map((val) => (
-                            <SelectItem key={val.id} value={String(val.parentId)}>{val.name} ({val.titleDesc})</SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="hireDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hire Date</FormLabel>
-                  <FormControl>
-                    <div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal bg-background",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(e) => {
-                              if (e) {
-                                field.onChange(e)
-                              }
-                            }}
-                            initialFocus
+          <div className='grid gap-6'>
+            <div className='grid gap-6 lg:grid-cols-2 xl:grid-cols-3'>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="positionId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Position</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={String(field.value)}
+                        onValueChange={value => field.onChange(value)}
+                      >
+                        <SelectTrigger className="capitalize">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {headNPos.userPosition?.map((val) => (
+                              <SelectItem key={val.positionId} value={String(val.positionId)}>{val.titleDesc}</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="parentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Superior</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={String(field.value)}
+                        onValueChange={value => field.onChange(value)}
+                      >
+                        <SelectTrigger className="capitalize">
+                          <SelectValue placeholder={field.value} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {headNPos.headUser?.map((val) => (
+                              <SelectItem key={val.id} value={String(val.parentId)}>{val.name} ({val.titleDesc})</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="hireDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hire Date</FormLabel>
+                    <FormControl>
+                      <div>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal bg-background",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(e) => {
+                                if (e) {
+                                  field.onChange(e)
+                                }
+                              }}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="statusActive"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status Active</FormLabel>
+                    <FormControl>
+                      <div>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="photo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Photo</FormLabel>
+                    <FormControl className=''>
+                      <div
+                        {...getRootProps()}
+                        className={cn(
+                          "group relative mt-8 grid h-max w-full cursor-pointer rounded-lg border-2 border-dashed",
+                          "border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+                          "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          "focus-visible:ring-offset-2",
+                          // "flex-1 flex flex-col items-center p-[20px] border-2 border-dashed border-gray-300 rounded-md",
+                          // "bg-gray-100 text-gray-400 outline-none transition duration-300 ease-in-out",
+                          // isDragActive && "border-muted-foreground/50 pointer-events-none opacity-60",
+                          isDragAccept && "border-primary transition duration-150 ease-in-out"
+                        )}
+                      >
+                        <input {...getInputProps()} />
+                        <div className="grid place-items-center gap-1 sm:px-5 mb-5">
+                          <Icons.upload
+                            className="h-8 w-8 text-muted-foreground"
+                            aria-hidden="true"
                           />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
+                          <p className="mt-2 text-base font-medium text-muted-foreground">
+                            Drag {`'n'`} drop Image here, or click to select file
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            Please upload Image with size less than 5 Mb
+                          </p>
+                        </div>
+                        <div className="flex justify-start">
+                          {thumbs}
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <Button
+                type="submit"
+                className="my-4 px-12 py-4 "
+                // variant={"secondary"}
+                disabled={isPending}
+              >
+                {(!user?.userId) ? "Add" : "Update"} User
+              </Button>
+            </div>
           </div>
-          <FormField
-            control={form.control}
-            name="statusActive"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status Active</FormLabel>
-                <FormControl>
-                  <div>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-red-400" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="photo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Photo</FormLabel>
-                <FormControl className=''>
-                  <div
-                    {...getRootProps()}
-                    className={cn(
-                      "group relative mt-8 grid h-max w-full cursor-pointer rounded-lg border-2 border-dashed",
-                      "border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
-                      "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      "focus-visible:ring-offset-2",
-                      // "flex-1 flex flex-col items-center p-[20px] border-2 border-dashed border-gray-300 rounded-md",
-                      // "bg-gray-100 text-gray-400 outline-none transition duration-300 ease-in-out",
-                      // isDragActive && "border-muted-foreground/50 pointer-events-none opacity-60",
-                      isDragAccept && "border-primary transition duration-150 ease-in-out"
-                    )}
-                  >
-                    <input {...getInputProps()} />
-                    <div className="grid place-items-center gap-1 sm:px-5 mb-5">
-                      <Icons.upload
-                        className="h-8 w-8 text-muted-foreground"
-                        aria-hidden="true"
-                      />
-                      <p className="mt-2 text-base font-medium text-muted-foreground">
-                        Drag {`'n'`} drop Image here, or click to select file
-                      </p>
-                      <p className="text-sm text-slate-500">
-                        Please upload Image with size less than 5 Mb
-                      </p>
-                    </div>
-                    <div className="flex justify-start">
-                      {thumbs}
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage className="text-red-400" />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            className="my-4 px-12 py-4 "
-            // variant={"secondary"}
-            disabled={isPending}
-          >
-            {(!user?.userId) ? "Add" : "Update"} User
-          </Button>
         </form>
       </Form>
       <div>

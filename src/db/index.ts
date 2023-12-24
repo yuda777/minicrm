@@ -1,7 +1,15 @@
+// ./index
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { users } from '@/db/schema'
+import * as schema from './schema'
 import postgres from 'postgres'
+import config from '../../drizzle.config'
 
-const sql = postgres(process.env.DATABASE_URL as string, { max: 1 })
-export const db = drizzle(sql, { schema: { users } })
+const sql = postgres({
+  host: process.env.PGHOST,
+  port: +(process.env.PGPORT ?? '5432'),
+  db: process.env.PGDATABASE,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+})
+export const db = drizzle(sql, { schema })
 // export const db = drizzle(sql)

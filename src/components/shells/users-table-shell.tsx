@@ -94,7 +94,7 @@ export function UsersTableShell({
         ),
         cell: ({ row }) => {
           return (
-            <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "default"} className="capitalize whitespace-nowrap" >
+            <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "gray"} className="capitalize whitespace-nowrap" >
               {row.original.userTitleDesc}
             </Badge >
           )
@@ -113,8 +113,8 @@ export function UsersTableShell({
               </div>
               <div>
                 {
-                  (row.original.superiorDeptDesc)
-                    ? <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "default"} className="capitalize whitespace-nowrap" >
+                  (row.original.superiorTitleDesc)
+                    ? <Badge variant={(row.original.userDeptCode) ? row.original.superiorDeptCode ? colorScheme(row.original.superiorDeptCode) : 'gray' : "gray"} className="capitalize whitespace-nowrap" >
                       {row.original.superiorTitleDesc}
                     </Badge >
                     : null
@@ -122,14 +122,21 @@ export function UsersTableShell({
               </div>
             </div>
           )
-
         }
       },
       {
-        accessorKey: "userPhone",
+        accessorKey: "userStatusActive",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Phone Number" />
+          <DataTableColumnHeader column={column} title="Status" />
         ),
+        cell: ({ row }) => {
+          const statusUser = (row.original.userStatusActive) ? "Active" : "Non Active"
+          return (
+            <Badge variant={statusUser === "Active" ? 'lime' : 'rose'} className="" >
+              {statusUser}
+            </Badge >
+          )
+        },
       },
       {
         accessorKey: "userHireDate",

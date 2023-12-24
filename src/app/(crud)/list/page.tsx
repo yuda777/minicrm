@@ -105,8 +105,8 @@ export default async function ListUserPage({
           // Filter by created date
           start_date && end_date
             ? and(
-              gte(users.createdAt, start_date),
-              lte(users.createdAt, end_date)
+              gte(users.createdAt, start_date.toISOString()),
+              lte(users.createdAt, end_date.toISOString())
             )
             : undefined
         )
@@ -136,8 +136,8 @@ export default async function ListUserPage({
           // Filter by created date
           start_date && end_date
             ? and(
-              gte(users.createdAt, start_date),
-              lte(users.createdAt, end_date)
+              gte(users.createdAt, start_date.toISOString()),
+              lte(users.createdAt, end_date.toISOString())
             )
             : undefined
         )
