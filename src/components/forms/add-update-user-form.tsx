@@ -85,6 +85,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const [files, setFiles] = React.useState<FileWithPreview | null>(null)
   const [isPending, startTransition] = React.useTransition()
   const [open, setOpen] = React.useState(false)
+  const [open2, setOpen2] = React.useState(false)
   console.log(headNPos);
 
 
@@ -237,129 +238,158 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
               <FormField
                 control={form.control}
                 name="positionId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Position</FormLabel>
-                    <FormControl>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              aria-expanded={open}
-                              className={cn(
-                                "w-full justify-between bg-background",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? headNPos.userPosition.find(
-                                  (val) => String(val.positionId) === field.value
-                                )?.titleDesc
-                                : "Select Position"}
-                              <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            <CommandInput placeholder="Search Position..." />
-                            <CommandEmpty>No Position found.</CommandEmpty>
-                            <CommandGroup>
-                              {headNPos.userPosition.map((val) => (
-                                <CommandItem
-                                  value={val.titleDesc}
-                                  key={val.positionId}
-                                  onSelect={() => {
-                                    form.setValue("positionId", String(val.positionId))
-                                    setOpen(false)
-                                  }}
-                                >
-                                  <Icons.check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      String(val.positionId) === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  {val.titleDesc}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const selectedPosition = headNPos.userPosition.find(val => String(val.positionId) === form.getValues("positionId"))
+                  return (
+                    <FormItem>
+                      <FormLabel>Position</FormLabel>
+                      <FormControl>
+                        <Popover open={open} onOpenChange={setOpen}>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className={cn(
+                                  "w-full justify-between bg-background",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {selectedPosition?.titleDesc ?
+                                  <Badge
+                                    variant={selectedPosition?.departementCode ?
+                                      colorScheme(selectedPosition.departementCode)
+                                      : 'gray'}
+                                    className="capitalize whitespace-nowrap ml-2" >
+                                    {selectedPosition?.titleDesc}
+                                  </Badge> :
+                                  "Select Position"
+                                }
+                                <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <Command>
+                              <CommandInput placeholder="Search Position..." />
+                              <CommandEmpty>No Position found.</CommandEmpty>
+                              <CommandGroup>
+                                {headNPos.userPosition.map((val) => (
+                                  <CommandItem
+                                    value={val.titleDesc}
+                                    key={val.positionId}
+                                    onSelect={() => {
+                                      form.setValue("positionId", String(val.positionId))
+                                      setOpen(false)
+                                    }}
+                                  >
+                                    <Icons.check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        String(val.positionId) === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <Badge
+                                      variant={val.titleDesc ? val.departementCode ? colorScheme(val.departementCode) : 'gray' : "gray"}
+                                      className="capitalize whitespace-nowrap ml-2" >
+                                      {val.titleDesc}
+                                    </Badge>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )
+                }}
               />
               <FormField
                 control={form.control}
                 name="parentId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Superior</FormLabel>
-                    <FormControl>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              aria-expanded={open}
-                              className={cn(
-                                "w-full justify-between bg-background",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
+                render={({ field }) => {
+                  const selectedSuperior = headNPos.headUser.find(val => String(val.id) === form.getValues("parentId"))
+                  return (
+                    <FormItem>
+                      <FormLabel>Superior</FormLabel>
+                      <FormControl>
+                        <Popover open={open2} onOpenChange={setOpen2}>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open2}
+                                className={cn(
+                                  "w-full justify-between bg-background",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {selectedSuperior?.titleDesc ?
+                                  <>
+                                    {selectedSuperior.name}
+                                    <Badge
+                                      variant={selectedSuperior?.departementCode ?
+                                        colorScheme(selectedSuperior.departementCode)
+                                        : 'gray'}
+                                      className="capitalize whitespace-nowrap ml-2" >
+                                      {selectedSuperior?.titleDesc}
+                                    </Badge>
+                                  </>
+                                  :
+                                  "Select Superior"
+                                }
+
+                                {/* {field.value
                                 ? headNPos.headUser.find(
                                   (val) => String(val.id) === field.value
                                 )?.name
-                                : "Select Superior"}
-                              <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            <CommandInput placeholder="Search Superior Name..." />
-                            <CommandEmpty>No Superior found.</CommandEmpty>
-                            <CommandGroup>
-                              {headNPos.headUser.map((val) => (
-                                <CommandItem
-                                  value={val.name}
-                                  key={val.id}
-                                  onSelect={() => {
-                                    form.setValue("parentId", String(val.id))
-                                    setOpen(false)
-                                  }}
-                                >
-                                  <Icons.check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      String(val.id) === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  {val.name}
-                                  <Badge
-                                    variant={val.titleDesc ? val.departementCode ? colorScheme(val.departementCode) : 'gray' : "gray"}
-                                    className="capitalize whitespace-nowrap ml-2" >
-                                    {val.titleDesc}
-                                  </Badge>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                                : "Select Superior"} */}
+                                <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <Command>
+                              <CommandInput placeholder="Search Superior Name..." />
+                              <CommandEmpty>No Superior found.</CommandEmpty>
+                              <CommandGroup>
+                                {headNPos.headUser.map((val) => (
+                                  <CommandItem
+                                    value={val.name}
+                                    key={val.id}
+                                    onSelect={() => {
+                                      form.setValue("parentId", String(val.id))
+                                      setOpen2(false)
+                                    }}
+                                  >
+                                    <Icons.check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        String(val.id) === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {val.name}
+                                    <Badge
+                                      variant={val.titleDesc ? val.departementCode ? colorScheme(val.departementCode) : 'gray' : "gray"}
+                                      className="capitalize whitespace-nowrap ml-2" >
+                                      {val.titleDesc}
+                                    </Badge>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
 
-                      {/* <Select
+                        {/* <Select
                         value={String(field.value)}
                         onValueChange={value => field.onChange(value)}
                       >
@@ -374,10 +404,11 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                           </SelectGroup>
                         </SelectContent>
                       </Select> */}
-                    </FormControl>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )
+                }}
               />
               <FormField
                 control={form.control}
