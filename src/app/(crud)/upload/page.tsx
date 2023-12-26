@@ -204,7 +204,12 @@ export default function UploadPage({ }) {
                         <td>{field}</td>
                         <td>
                           <div className='flex items-center justify-center'>
-                            <ComboboxDemo fieldTable={field} fieldExcel={headerKeys} collectedData={fieldMapping} setCollectedData={setFieldMapping} />
+                            <ComboboxDemo
+                              fieldTable={field}
+                              fieldExcel={headerKeys}
+                              collectedData={fieldMapping}
+                              setCollectedData={setFieldMapping}
+                            />
                           </div>
                         </td>
                       </tr>

@@ -86,7 +86,7 @@ export async function getHeadUser() {
     })
     .from(tu)
     .leftJoin(tp, eq(tp.positionId, tu.positionId))
-    .orderBy(tu.userId)
+    .orderBy(tp.departementCode)
   return userPosition
 }
 

@@ -7,11 +7,20 @@ import * as z from 'zod'
 import { format } from 'date-fns-tz'
 import { db } from '@/db'
 import { sql } from 'drizzle-orm'
+import { PositionColor } from '@/config/users'
+import { Badge, type BadgeVariant } from '@/components/ui/badge2'
 
 const defaultTimeZone = 'Asia/Jakarta'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function colorScheme(departementCode: string) {
+  const color = departementCode
+    ? PositionColor.find((job) => job.position.includes(departementCode))
+    : null
+  return color?.color as BadgeVariant['variant']
 }
 
 export function formatPrice(

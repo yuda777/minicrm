@@ -1,5 +1,5 @@
 export const PositionColor = [
-  { position: 'FNC', color: 'red' },
+  { position: 'FNC', color: 'rose' },
   { position: 'HR', color: 'yellow' },
   { position: 'IT', color: 'green' },
   { position: 'MKT', color: 'blue' },

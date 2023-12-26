@@ -3,8 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { type ColumnDef } from "unstyled-table"
-import { PositionColor } from "@/config/users"
-import { formatDate, formatPrice } from "@/lib/utils"
+import { colorScheme, formatDate, formatPrice } from "@/lib/utils"
 import { Badge, type BadgeVariant } from "@/components/ui/badge2"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTable } from "@/components/data-table/data-table"
@@ -19,10 +18,6 @@ interface UsersTableShellProps {
   pageCount: number,
 }
 
-function colorScheme(departementCode: string) {
-  const color = (departementCode) ? PositionColor.find(job => job.position.includes(departementCode)) : null
-  return color?.color as BadgeVariant['variant']
-}
 
 export function UsersTableShell({
   data,
@@ -132,7 +127,7 @@ export function UsersTableShell({
         cell: ({ row }) => {
           const statusUser = (row.original.userStatusActive) ? "Active" : "Non Active"
           return (
-            <Badge variant={statusUser === "Active" ? 'lime' : 'rose'} className="" >
+            <Badge variant={statusUser === "Active" ? 'lime' : 'red'} className="" >
               {statusUser}
             </Badge >
           )
