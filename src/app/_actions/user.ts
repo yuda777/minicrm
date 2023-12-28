@@ -90,7 +90,10 @@ export async function getHeadUser() {
   return userPosition
 }
 
-export async function getPosUser() {
-  const position = await db.select().from(tp).where(ne(tp.positionId, 1))
+export async function getPosUser(userId?: number) {
+  const position = await db
+    .select()
+    .from(tp)
+    .where(userId !== 1 ? ne(tp.positionId, 1) : undefined)
   return position
 }

@@ -54,7 +54,7 @@ interface headNPosProps {
   headUser: UserWithPosition[]
 }
 
-function useDataUser() {
+function useDataUser(userId?: number) {
   const [headNPos, setHeadNPos] = React.useState<headNPosProps>({
     userPosition: [],
     headUser: [],
@@ -62,7 +62,7 @@ function useDataUser() {
 
   const getHeadNPosUser = async () => {
     try {
-      const userPosition = await getPosUser()
+      const userPosition = await getPosUser(userId)
       const headUser: UserWithPosition[] = await getHeadUser();
       setHeadNPos({ userPosition, headUser });
     } catch (error) {
@@ -71,6 +71,7 @@ function useDataUser() {
   }
   React.useEffect(() => {
     getHeadNPosUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return {
     headNPos
@@ -79,7 +80,7 @@ function useDataUser() {
 
 const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const { toast } = useToast()
-  const { headNPos } = useDataUser();
+  const { headNPos } = useDataUser(user?.userId);
   const router = useRouter()
   const [updateImage, setUpdateImage] = React.useState<boolean>(false)
   const [files, setFiles] = React.useState<FileWithPreview | null>(null)
@@ -239,6 +240,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                 control={form.control}
                 name="positionId"
                 render={({ field }) => {
+                  console.log("PositionID:", field.value);
                   const selectedPosition = headNPos.userPosition.find(val => String(val.positionId) === form.getValues("positionId"))
                   return (
                     <FormItem>
@@ -250,27 +252,30 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                               <Button
                                 variant="outline"
                                 role="combobox"
+                                disabled={user?.userId === 1}
                                 aria-expanded={open}
                                 className={cn(
                                   "w-full justify-between bg-background",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {selectedPosition?.titleDesc ?
-                                  <Badge
-                                    variant={selectedPosition?.departementCode ?
-                                      colorScheme(selectedPosition.departementCode)
-                                      : 'gray'}
-                                    className="capitalize whitespace-nowrap ml-2" >
-                                    {selectedPosition?.titleDesc}
-                                  </Badge> :
-                                  "Select Position"
-                                }
+                                <div className="mr-auto">
+                                  {selectedPosition?.titleDesc ?
+                                    <Badge
+                                      variant={selectedPosition?.departementCode ?
+                                        colorScheme(selectedPosition.departementCode)
+                                        : 'gray'}
+                                      className="capitalize whitespace-nowrap ml-2" >
+                                      {selectedPosition?.titleDesc}
+                                    </Badge> :
+                                    null
+                                  }
+                                </div>
                                 <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-full p-0">
+                          <PopoverContent className="w-[400px] p-0">
                             <Command>
                               <CommandInput placeholder="Search Position..." />
                               <CommandEmpty>No Position found.</CommandEmpty>
@@ -324,44 +329,40 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                               <Button
                                 variant="outline"
                                 role="combobox"
+                                disabled={user?.userId === 1}
                                 aria-expanded={open2}
                                 className={cn(
                                   "w-full justify-between bg-background",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {selectedSuperior?.titleDesc ?
-                                  <>
-                                    {selectedSuperior.name}
-                                    <Badge
-                                      variant={selectedSuperior?.departementCode ?
-                                        colorScheme(selectedSuperior.departementCode)
-                                        : 'gray'}
-                                      className="capitalize whitespace-nowrap ml-2" >
-                                      {selectedSuperior?.titleDesc}
-                                    </Badge>
-                                  </>
-                                  :
-                                  "Select Superior"
-                                }
-
-                                {/* {field.value
-                                ? headNPos.headUser.find(
-                                  (val) => String(val.id) === field.value
-                                )?.name
-                                : "Select Superior"} */}
+                                <div className="mr-auto">
+                                  {selectedSuperior?.titleDesc ?
+                                    <>
+                                      {selectedSuperior.name}
+                                      <Badge
+                                        variant={selectedSuperior?.departementCode ?
+                                          colorScheme(selectedSuperior.departementCode)
+                                          : 'gray'}
+                                        className="capitalize whitespace-nowrap ml-2" >
+                                        {selectedSuperior?.titleDesc}
+                                      </Badge>
+                                    </>
+                                    : null
+                                  }
+                                </div>
                                 <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-full p-0">
+                          <PopoverContent className=" p-0 w-[400px]">
                             <Command>
                               <CommandInput placeholder="Search Superior Name..." />
                               <CommandEmpty>No Superior found.</CommandEmpty>
                               <CommandGroup>
                                 {headNPos.headUser.map((val) => (
                                   <CommandItem
-                                    value={val.name}
+                                    value={`${val.name} ${val.titleDesc}`}
                                     key={val.id}
                                     onSelect={() => {
                                       form.setValue("parentId", String(val.id))
@@ -388,22 +389,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                             </Command>
                           </PopoverContent>
                         </Popover>
-
-                        {/* <Select
-                        value={String(field.value)}
-                        onValueChange={value => field.onChange(value)}
-                      >
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder={field.value} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {headNPos.headUser?.map((val) => (
-                              <SelectItem key={val.id} value={String(val.parentId)}>{val.name} ({val.titleDesc})</SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select> */}
                       </FormControl>
                       <FormMessage className="text-red-400" />
                     </FormItem>
@@ -512,9 +497,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                           "border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
                           "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                           "focus-visible:ring-offset-2",
-                          // "flex-1 flex flex-col items-center p-[20px] border-2 border-dashed border-gray-300 rounded-md",
-                          // "bg-gray-100 text-gray-400 outline-none transition duration-300 ease-in-out",
-                          // isDragActive && "border-muted-foreground/50 pointer-events-none opacity-60",
                           isDragAccept && "border-primary transition duration-150 ease-in-out"
                         )}
                       >
