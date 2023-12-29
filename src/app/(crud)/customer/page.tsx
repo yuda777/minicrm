@@ -4,7 +4,7 @@ import { db } from "@/db"
 import { customer, customerStatus, type Customer } from "@/db/schema"
 import { env } from "@/env.mjs"
 import dayjs from "dayjs"
-import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gte, ilike, like, lte, sql } from "drizzle-orm"
 
 import { UsersTableShell } from "@/components/shells/users-table-shell"
 import {
@@ -84,13 +84,13 @@ export default async function ListCustomerPage({
         and(
           // Filter by name
           typeof name === "string"
-            ? like(customer.customerName, `%${name}%`)
+            ? ilike(customer.customerName, `%${name}%`)
             : undefined,
           // Filter by created date
           start_date && end_date
             ? and(
-              gte(customer.createdAt, start_date),
-              lte(customer.createdAt, end_date)
+              gte(customer.createdAt, start_date.toISOString()),
+              lte(customer.createdAt, end_date.toISOString())
             )
             : undefined
         )
@@ -113,13 +113,13 @@ export default async function ListCustomerPage({
         and(
           // Filter by name
           typeof name === "string"
-            ? like(customer.customerName, `%${name}%`)
+            ? ilike(customer.customerName, `%${name}%`)
             : undefined,
           // Filter by created date
           start_date && end_date
             ? and(
-              gte(customer.createdAt, start_date),
-              lte(customer.createdAt, end_date)
+              gte(customer.createdAt, start_date.toISOString()),
+              lte(customer.createdAt, end_date.toISOString())
             )
             : undefined
         )

@@ -4,7 +4,7 @@ import { db } from "@/db"
 import { type Position, users, type User, position } from "@/db/schema"
 import { env } from "@/env.mjs"
 import dayjs from "dayjs"
-import { ColumnBuilder, and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
+import { ColumnBuilder, and, asc, desc, eq, gte, ilike, like, lte, sql } from "drizzle-orm"
 
 import { UsersTableShell } from "@/components/shells/users-table-shell"
 import {
@@ -100,7 +100,7 @@ export default async function ListUserPage({
         and(
           // Filter by name
           typeof name === "string"
-            ? like(users.name, `%${name}%`)
+            ? ilike(users.name, `%${name}%`)
             : undefined,
           // Filter by created date
           start_date && end_date
@@ -131,7 +131,7 @@ export default async function ListUserPage({
         and(
           // Filter by name
           typeof name === "string"
-            ? like(users.name, `%${name}%`)
+            ? ilike(users.name, `%${name}%`)
             : undefined,
           // Filter by created date
           start_date && end_date

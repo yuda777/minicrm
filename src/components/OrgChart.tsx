@@ -88,7 +88,6 @@ const Cards = (d: any) => {
   const color = '#FFFFFF'
   const imageDiffVert = 25 + 2
 
-  console.log(d)
   return (
     <div className={`w-[${d.width}px] h-[${d.height}px] pt-[${imageDiffVert - 2}px] px-[1px]`}>
       <div className={`font-inter bg-[${color}] dark:bg-[#1d283a] ml-[-1px] w-[${d.width - 2}px] h-[${d.height - imageDiffVert}px] rounded-sm border dark:border-white`}>

@@ -87,8 +87,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const [isPending, startTransition] = React.useTransition()
   const [open, setOpen] = React.useState(false)
   const [open2, setOpen2] = React.useState(false)
-  console.log(headNPos);
-
 
   // const [selectedImage, setSelectedImage] = useState("");
   const form = useForm<Inputs>({
@@ -240,7 +238,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                 control={form.control}
                 name="positionId"
                 render={({ field }) => {
-                  console.log("PositionID:", field.value);
                   const selectedPosition = headNPos.userPosition.find(val => String(val.positionId) === form.getValues("positionId"))
                   return (
                     <FormItem>

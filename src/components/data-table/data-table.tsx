@@ -141,7 +141,7 @@ export function DataTable<TData, TValue>({
 
   // Handle server-side column filtering
   const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "name")?.value,
+    columnFilters.find((f) => f.id === "userName")?.value,
     500
   )
 

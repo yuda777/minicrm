@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
   const data = await req.formData()
   const timestamp = new Date().getTime() // Get a unique timestamp
   const randomString = Math.random().toString(36).substring(2, 8) // Generate a random string
-  console.log(data)
 
   const file: File | null = data.get('file') as unknown as File
   const imageFileName = file.name
