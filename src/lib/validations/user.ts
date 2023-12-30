@@ -41,6 +41,58 @@ export const userSchema = z.object({
   photo: z.any().optional(),
 })
 
+interface UserSchemaOptions {
+  userId?: number
+}
+export const createUserSchema = ({ userId }: UserSchemaOptions) => {
+  // console.log(userId)
+
+  return z.object({
+    name: z.string().min(1, {
+      message: 'Must be at least 1 character',
+    }),
+    parentId: z
+      .number()
+      // .regex(/^\d+$/)
+      .optional()
+      .refine(
+        (val) => {
+          return (
+            (val == undefined && userId === 1) ||
+            (val !== undefined && userId !== 1)
+          )
+        },
+        {
+          message:
+            userId === 1 ? 'Superior must empty' : 'Superior is required',
+        },
+      ),
+    positionId: z
+      .number()
+      // .regex(/^\d+$/)
+      .optional()
+      .refine(
+        (val) => {
+          console.log('val:', val)
+          return (
+            (userId !== 1 && val !== 1 && val !== undefined) ||
+            (userId === 1 && val === 1)
+          )
+        },
+        {
+          message:
+            userId === 1 ? 'cannot change Position' : 'Position is required',
+        },
+      ),
+    email: z.string().email().optional().or(z.literal('')),
+    hireDate: z.date().optional(),
+    phoneNumber: z.string().optional(),
+    statusActive: z.boolean().optional(),
+    updatedAt: z.date().optional(),
+    photo: z.any().optional(),
+  })
+}
+
 export const filterUsersSchema = z.object({
   query: z.string(),
 })

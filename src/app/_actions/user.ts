@@ -22,6 +22,7 @@ import {
 import { type z } from 'zod'
 
 import type {
+  createUserSchema,
   getUserSchema,
   getUsersSchema,
   userSchema,
@@ -40,16 +41,17 @@ export async function checkUserAction(input: { name: string; id?: number }) {
     throw new Error('User name already taken.')
   }
 }
+// type Inputs = z.infer<ReturnType<typeof createUserSchema>>
 
 const now = new Date().toISOString()
 export async function addNUpdateUserAction(
-  input: z.infer<typeof userSchema>,
+  input: z.infer<ReturnType<typeof createUserSchema>>,
   userId?: number,
 ) {
   const updateObject = {
     name: input.name,
-    parentId: Number(input.parentId),
-    positionId: Number(input.positionId),
+    parentId: input.parentId,
+    positionId: input.positionId,
     photo: input.photo,
     email: input.email,
     phoneNumber: input.phoneNumber,
@@ -60,7 +62,7 @@ export async function addNUpdateUserAction(
   if (userId) {
     await db
       .update(users)
-      .set({ ...updateObject, updatedAt: now })
+      .set({ ...updateObject, updatedAt: sql<string>`now()` })
       .where(eq(users.userId, userId)) // Adjust this condition based on your primary key
     revalidatePath('/list/[userId]', 'page')
   } else {

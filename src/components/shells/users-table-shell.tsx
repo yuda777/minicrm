@@ -12,12 +12,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { userPositionWithSuperior, type UserWithPosition } from '@/types'
 
-
 interface UsersTableShellProps {
   data: userPositionWithSuperior[],
   pageCount: number,
 }
-
 
 export function UsersTableShell({
   data,

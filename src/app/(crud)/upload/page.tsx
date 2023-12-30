@@ -224,7 +224,6 @@ export default function UploadPage({ }) {
               >
                 Upload Data
               </Button>
-
             </CardContent>
           </Card >
         </form>

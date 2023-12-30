@@ -35,7 +35,6 @@ import * as z from "zod"
 import type { FileWithPreview, UserWithPosition, userPositionWithSuperior } from "@/types"
 import Image from 'next/image'
 import { format } from 'date-fns'
-import { userSchema } from '@/lib/validations/user'
 import { addNUpdateUserAction, getHeadUser, getPosUser } from '@/app/_actions/user'
 import { useRouter } from 'next/navigation'
 import {
@@ -43,7 +42,9 @@ import {
   type FileWithPath,
 } from "react-dropzone"
 import { Badge } from '../ui/badge2';
-type Inputs = z.infer<typeof userSchema>
+import { createUserSchema } from '@/lib/validations/user';
+
+type Inputs = z.infer<ReturnType<typeof createUserSchema>>
 
 interface FrmInputProps {
   user?: User
@@ -87,15 +88,17 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
   const [isPending, startTransition] = React.useTransition()
   const [open, setOpen] = React.useState(false)
   const [open2, setOpen2] = React.useState(false)
+  const userId = user?.userId;
+  const userSchema = userId ? createUserSchema({ userId }) : createUserSchema({ userId: 0 })
+  // console.log(user)
 
-  // const [selectedImage, setSelectedImage] = useState("");
   const form = useForm<Inputs>({
     resolver: zodResolver(userSchema),
     mode: "onSubmit",
     defaultValues: {
       name: user?.name || "",
-      parentId: String(user?.parentId) || "",
-      positionId: String(user?.positionId) || "",
+      parentId: user?.parentId ?? undefined,
+      positionId: user?.positionId ?? undefined,
       photo: user?.photo || null,
       email: user?.email || "",
       phoneNumber: user?.phoneNumber || "",
@@ -238,7 +241,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                 control={form.control}
                 name="positionId"
                 render={({ field }) => {
-                  const selectedPosition = headNPos.userPosition.find(val => String(val.positionId) === form.getValues("positionId"))
+                  const selectedPosition = headNPos.userPosition.find(val => val.positionId === form.getValues("positionId"))
                   return (
                     <FormItem>
                       <FormLabel>Position</FormLabel>
@@ -282,14 +285,14 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                                     value={val.titleDesc}
                                     key={val.positionId}
                                     onSelect={() => {
-                                      form.setValue("positionId", String(val.positionId))
+                                      form.setValue("positionId", val.positionId)
                                       setOpen(false)
                                     }}
                                   >
                                     <Icons.check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        String(val.positionId) === field.value
+                                        val.positionId === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -315,7 +318,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                 control={form.control}
                 name="parentId"
                 render={({ field }) => {
-                  const selectedSuperior = headNPos.headUser.find(val => String(val.id) === form.getValues("parentId"))
+                  const selectedSuperior = headNPos.headUser.find(val => val.id === form.getValues("parentId"))
                   return (
                     <FormItem>
                       <FormLabel>Superior</FormLabel>
@@ -362,14 +365,14 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                                     value={`${val.name} ${val.titleDesc}`}
                                     key={val.id}
                                     onSelect={() => {
-                                      form.setValue("parentId", String(val.id))
+                                      form.setValue("parentId", val.id)
                                       setOpen2(false)
                                     }}
                                   >
                                     <Icons.check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        String(val.id) === field.value
+                                        val.id === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}

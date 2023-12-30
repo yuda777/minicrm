@@ -116,7 +116,7 @@ export default async function ListUserPage({
           ? order === "asc"
             ? asc(selectField[column])
             : desc(selectField[column])
-          : desc(users.updatedAt), desc(users.createdAt)
+          : sql`${users.updatedAt} DESC NULLS LAST`
       )
 
     const totalUsers = await tx

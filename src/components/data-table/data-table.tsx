@@ -92,6 +92,7 @@ export function DataTable<TData, TValue>({
     []
   )
 
+  console.log("columnFilters:", columnFilters);
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({

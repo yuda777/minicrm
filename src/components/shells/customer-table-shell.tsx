@@ -6,7 +6,6 @@ import { formatDate } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { type Customer } from "@/db/schema"
 
 
 interface ICustomer {
@@ -15,7 +14,7 @@ interface ICustomer {
   phone: string | null
   address: string | null
   birthDate: string | null
-  createdAt: Date | null
+  createdAt: string | null
   status: string | null
   subStatus: string | null
 }
