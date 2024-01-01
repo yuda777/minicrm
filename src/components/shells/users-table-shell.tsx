@@ -11,6 +11,7 @@ import { Icons } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { userPositionWithSuperior, type UserWithPosition } from '@/types'
+import IconStatus from "@/components/icon-status"
 
 interface UsersTableShellProps {
   data: userPositionWithSuperior[],
@@ -122,14 +123,7 @@ export function UsersTableShell({
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Status" />
         ),
-        cell: ({ row }) => {
-          const statusUser = (row.original.userStatusActive) ? "Active" : "Non Active"
-          return (
-            <Badge variant={statusUser === "Active" ? 'lime' : 'red'} className="" >
-              {statusUser}
-            </Badge >
-          )
-        },
+        cell: ({ row }) => <IconStatus status={row.original.userStatusActive as boolean} />
       },
       {
         accessorKey: "userHireDate",

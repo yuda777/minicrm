@@ -37,8 +37,8 @@ export default async function ListUserPage({
   params,
   searchParams,
 }: ProductsPageProps) {
-  const { page, per_page, sort, name, date_range } = searchParams
-
+  const { page, per_page, sort, name, status, date_range } = searchParams
+  const statusFilter = status as "1" | "0" | undefined
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
   // Number of items to skip
@@ -108,6 +108,9 @@ export default async function ListUserPage({
               gte(users.createdAt, start_date.toISOString()),
               lte(users.createdAt, end_date.toISOString())
             )
+            : undefined,
+          statusFilter
+            ? eq(users.statusActive, Number(statusFilter) === 1)
             : undefined
         )
       )
@@ -118,7 +121,6 @@ export default async function ListUserPage({
             : desc(selectField[column])
           : sql`${users.updatedAt} DESC NULLS LAST`
       )
-
     const totalUsers = await tx
       .select({
         count: sql<number>`count(${users.userId})`,
@@ -139,10 +141,12 @@ export default async function ListUserPage({
               gte(users.createdAt, start_date.toISOString()),
               lte(users.createdAt, end_date.toISOString())
             )
+            : undefined,
+          statusFilter
+            ? eq(users.statusActive, Number(statusFilter) === 1)
             : undefined
         )
       )
-
     return {
       userPositionWithSuperior,
       totalUsers: Number(totalUsers[0]?.count) ?? 0,

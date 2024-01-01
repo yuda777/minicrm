@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar-customer"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -61,19 +61,12 @@ export function DataTable<TData, TValue>({
   const searchParams = useSearchParams()
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 500); // Debounce the search
-  // console.log("debouncedSearch:", debouncedSearch);
-  // console.log("searchParams:", searchParams);
-
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "10"
   const sort = searchParams?.get("sort")
   const name = searchParams?.get("name")
-  const status = searchParams?.get("status")
   const [column, order] = sort?.split(".") ?? []
-
-  // console.log("name:", name);
-  // console.log("status:", status);
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -87,7 +80,6 @@ export function DataTable<TData, TValue>({
           newSearchParams.set(key, String(value))
         }
       }
-      // console.log("newSearchParams:", newSearchParams);
       return newSearchParams.toString()
     },
     [searchParams]
@@ -97,22 +89,8 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
-  const defaultFilters = [];
-
-  if (name) {
-    defaultFilters.push({
-      id: 'userName',
-      value: name
-    });
-  }
-  if (status) {
-    defaultFilters.push({
-      id: 'userStatusActive',
-      value: status
-    });
-  }
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [...defaultFilters]
+    []
   )
 
   // Handle server-side pagination
@@ -168,17 +146,15 @@ export function DataTable<TData, TValue>({
     500
   )
 
-  const statusValue = columnFilters.find((f) => f.id === "userStatusActive")?.value as string
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : name,
-        status: statusValue ?? status
+        name: typeof debouncedName === "string" ? debouncedName : null,
       })}`
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName, columnFilters, status])
+  }, [debouncedName])
 
   const table = useReactTable({
     data,
