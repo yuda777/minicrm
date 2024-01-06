@@ -88,9 +88,11 @@ export function UsersTableShell({
         ),
         cell: ({ row }) => {
           return (
-            <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "gray"} className="capitalize whitespace-nowrap" >
-              {row.original.userTitleDesc}
-            </Badge >
+            <div className="flex">
+              <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "gray"} className="capitalize whitespace-nowrap" >
+                {row.original.userTitleDesc}
+              </Badge >
+            </div>
           )
         }
       },
@@ -123,7 +125,11 @@ export function UsersTableShell({
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Status" />
         ),
-        cell: ({ row }) => <IconStatus status={row.original.userStatusActive as boolean} />
+        cell: ({ row }) => (
+          <div className="flex content-center justify-center items-center">
+            <IconStatus status={row.original.userStatusActive as boolean} />
+          </div>
+        )
       },
       {
         accessorKey: "userHireDate",

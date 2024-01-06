@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Table } from "@tanstack/react-table"
 import {
   DropdownMenu,
@@ -24,7 +24,6 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const optStatus = [1, 0]
-  const [value, setValue] = React.useState<number | null>(null)
   const router = useRouter()
   const pathname = usePathname()
   const isFiltered = table.getState().columnFilters.length > 0
@@ -74,7 +73,9 @@ export function DataTableToolbar<TData>({
         {isFiltered && (
           <Button
             variant={"ghost"}
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters()
+            }}
             className="h-8 px-2 lg:px-3">
             Reset
             <Icons.close className="ml-2 h-4 w-4" />

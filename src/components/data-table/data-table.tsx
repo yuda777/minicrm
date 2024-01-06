@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import { Button } from "../ui/button"
+import { Icons } from "../icons"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -61,8 +63,8 @@ export function DataTable<TData, TValue>({
   const searchParams = useSearchParams()
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 500); // Debounce the search
-  // console.log("debouncedSearch:", debouncedSearch);
-  // console.log("searchParams:", searchParams);
+  const newSearchParams = new URLSearchParams(searchParams?.toString())
+  // setUrlSearchParams(newSearchParams);
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -72,14 +74,10 @@ export function DataTable<TData, TValue>({
   const status = searchParams?.get("status")
   const [column, order] = sort?.split(".") ?? []
 
-  // console.log("name:", name);
-  // console.log("status:", status);
-
   // Create query string
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
       const newSearchParams = new URLSearchParams(searchParams?.toString())
-
       for (const [key, value] of Object.entries(params)) {
         if (value === null) {
           newSearchParams.delete(key)
@@ -87,7 +85,6 @@ export function DataTable<TData, TValue>({
           newSearchParams.set(key, String(value))
         }
       }
-      // console.log("newSearchParams:", newSearchParams);
       return newSearchParams.toString()
     },
     [searchParams]
@@ -150,15 +147,12 @@ export function DataTable<TData, TValue>({
   ])
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page,
-        sort: sorting[0]?.id
-          ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
-          : null,
-      })}`
-    )
-
+    router.push(`${pathname}?${createQueryString({
+      page,
+      sort: sorting[0]?.id
+        ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
+        : null,
+    })}`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
@@ -173,8 +167,8 @@ export function DataTable<TData, TValue>({
     router.push(
       `${pathname}?${createQueryString({
         page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : name,
-        status: statusValue ?? status
+        name: typeof debouncedName === "string" ? debouncedName : null,
+        status: statusValue ?? null
       })}`
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,7 +204,7 @@ export function DataTable<TData, TValue>({
     manualSorting: true,
     manualFiltering: true,
   })
-
+  // table.resetColumnFilters()
   return (
     <div className="space-y-3 p-1 overflow-auto">
       <DataTableToolbar table={table} />
