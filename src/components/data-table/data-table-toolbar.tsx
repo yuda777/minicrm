@@ -8,6 +8,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,6 +33,7 @@ export function DataTableToolbar<TData>({
   const router = useRouter()
   const pathname = usePathname()
   const isFiltered = table.getState().columnFilters.length > 0
+  const filterStatus = Number(table.getColumn("userStatusActive")?.getFilterValue())
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -41,19 +48,37 @@ export function DataTableToolbar<TData>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              aria-label="Toggle columns"
-              variant="outline"
-              size="sm"
-              className="ml-auto h-8 bg-background"
-            >
-              Status
-              <Icons.chevronDown
-                className="ml-2 h-4 w-4"
-                aria-hidden="true"
-              />
-            </Button>
+            <div>
+              <Button
+                aria-label="Toggle columns"
+                variant="outline"
+                size="sm"
+                className="ml-auto h-8 bg-background"
+              >
+                {!isNaN(filterStatus) ?
+                  <div className="flex justify-between space-x-1">
+                    <IconStatus status={1 === filterStatus} wthLabel />
+                  </div >
+                  :
+                  <div>
+                    Status
+                  </div>}
+                <Icons.chevronDown
+                  className="ml-2 h-4 w-4"
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
           </DropdownMenuTrigger>
+          {!isNaN(filterStatus) && <div
+            className="cursor-pointer hover:bg-slate-600 p-1 rounded-sm bg-background"
+            onClick={() => {
+              table.getColumn("userStatusActive")?.setFilterValue(null)
+              console.log("asdas");
+            }}
+          >
+            <Icons.close className=" h-4 w-4" />
+          </div>}
           <DropdownMenuContent align="end" className="">
             {
               optStatus.map((val) => {
@@ -61,10 +86,10 @@ export function DataTableToolbar<TData>({
                   <DropdownMenuCheckboxItem
                     key={val}
                     className="capitalize"
-                    checked={val === Number(table.getColumn("userStatusActive")?.getFilterValue())}
+                    checked={val === filterStatus}
                     onCheckedChange={() => table.getColumn("userStatusActive")?.setFilterValue(val)}
                   >
-                    <IconStatus status={val === 1} wthLabel={true} />
+                    <IconStatus status={val === 1} wthLabel />
                   </DropdownMenuCheckboxItem>
                 )
               })}
@@ -83,16 +108,25 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex items-center space-x-2">
-        <Button
-          aria-label="Add new item"
-          variant="outline"
-          size="sm"
-          className="h-8"
-          onClick={() => router.push(`${pathname}/new`)}
-        >
-          <Icons.addCircle className="mr-2 h-4 w-4" />
-          New
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                aria-label="Add new item"
+                variant="outline"
+                size="sm"
+                className="h-8"
+                onClick={() => router.push(`${pathname}/new`)}
+              >
+                <Icons.addCircle className="mr-2 h-4 w-4" />
+                New
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Create New User
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <DataTableViewOptions table={table} />
       </div>
     </div>

@@ -11,6 +11,12 @@ import { Icons } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { userPositionWithSuperior, type UserWithPosition } from '@/types'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import IconStatus from "@/components/icon-status"
 
 interface UsersTableShellProps {

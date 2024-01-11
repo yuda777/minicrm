@@ -1,12 +1,20 @@
 import { Icons } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
 
 type TStatus = React.HTMLAttributes<HTMLDivElement> & {
   status: boolean,
-  wthLabel?: boolean
+  wthLabel?: boolean,
+  toolTips?: boolean
 }
 
-const IconStatus = ({ status, wthLabel = false, className, ...props }: TStatus): React.ReactNode => {
+const IconStatus = ({ status, wthLabel = false, toolTips = false, className, ...props }: TStatus): React.ReactNode => {
   const statusArr = [
     {
       text: "Active",
@@ -22,13 +30,25 @@ const IconStatus = ({ status, wthLabel = false, className, ...props }: TStatus):
     },
   ]
   const SelectedStatus = statusArr.find(val => val.value === status)
+  const Vbn = () => {
+    return <div></div>
+  }
   return (SelectedStatus &&
-    <>
-      <span title={SelectedStatus?.text}>
-        {/* <SelectedStatus.icon color={SelectedStatus.color} aria-labelledby="asf" /> */}
-        <SelectedStatus.icon aria-hidden="true" className={cn(SelectedStatus?.color, "h-5 w-5")} />
-      </span>
-      <div {...props} className={cn(className, " ml-2")}>{wthLabel ? SelectedStatus?.text : null}</div>
-    </>)
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {/* <Button variant={"pasive"} size={"plain"}> */}
+          <div className="flex">
+            <SelectedStatus.icon aria-hidden="true" className={cn(SelectedStatus?.color, "h-5 w-5")} />
+            <div {...props} className={cn(className, " ml-2")}>{wthLabel ? SelectedStatus?.text : null}</div>
+          </div>
+          {/* </Button> */}
+        </TooltipTrigger>
+        <TooltipContent>
+          {SelectedStatus?.text}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
 }
 export default IconStatus
