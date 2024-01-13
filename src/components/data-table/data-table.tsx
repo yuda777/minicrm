@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { rankItem } from "@tanstack/match-sorter-utils"
 import {
   flexRender,
-  ColumnResizeMode,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -67,8 +66,6 @@ export function DataTable<TData, TValue>({
   const debouncedSearch = useDebounce(search, 500); // Debounce the search
   const newSearchParams = new URLSearchParams(searchParams?.toString())
   // setUrlSearchParams(newSearchParams);
-  const [columnResizeMode, setColumnResizeMode] =
-    React.useState<ColumnResizeMode>('onChange')
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "10"
@@ -205,8 +202,6 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
     enableColumnResizing: true,
-    // columnResizeMode: 'onChange',
-    columnResizeMode,
     manualSorting: true,
     manualFiltering: true,
   })
@@ -215,13 +210,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-3 p-1 overflow-auto">
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
-        <Table
-          {...{
-            style: {
-              width: table.getCenterTotalSize(),
-            },
-          }}
-        >
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -230,49 +219,14 @@ export function DataTable<TData, TValue>({
                     <TableHead
                       key={header.id}
                       className="whitespace-nowrap"
-                      style={{
-                        width: header.getSize(),
-                      }}
                     >
-                      <div >
+                      <div>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                        {header.column.columnDef.enableResizing !== false && (
-                          //==============================================================
-                          // <div className="relative">
-                          //   <div
-                          //     {...{
-                          //       onMouseDown: header.getResizeHandler(),
-                          //       onTouchStart: header.getResizeHandler(),
-                          //       className: `resizer ltr absolute right-0 top-0 h-full w-1 bg-border 
-                          // cursor-col-resize select-none touch-none ${header.column.getIsResizing()
-                          //           ? 'opacity-100 bg-blue-500'
-                          //           : ''
-                          //         }`,
-                          //     }}
-                          //   ></div>
-                          // </div>
-                          //==============================================================
-                          <div className="relative">
-                            <div
-                              onMouseDown={header.getResizeHandler()}
-                              onTouchStart={header.getResizeHandler()}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                              className={`absolute right-0 my-auto top-0 bottom-0 w-[4px] h-4 rounded-none cursor-col-resize select-none`}
-                              aria-hidden="true"
-                              data-testid={`column-resizer-${header.id}`}
-                            >
-                              <div className="ml-[3px] w-[1px] mr-[1px] h-full bg-gray-200 dark:bg-bg-grid-border" />
-                            </div>
-                          </div>
-                          //==============================================================
-                        )}
                       </div>
                     </TableHead>
                   )
@@ -286,16 +240,11 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                // className={cn(onRowClick && 'cursor-pointer', 'content')}
                 >
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       key={cell.id}
                       className={cn('font-sfCompact')}
-                      style={{
-                        width: cell.column.getSize(),
-                      }}
-
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

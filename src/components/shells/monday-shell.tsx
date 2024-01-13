@@ -54,7 +54,7 @@ export function MondayTableShell({
             aria-label="Select row"
           />
         ),
-        enableResizing: true,
+        enableResizing: false,
         // Disable column sorting for this column
         enableSorting: false,
         enableHiding: false,

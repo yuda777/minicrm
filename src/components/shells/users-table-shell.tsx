@@ -52,6 +52,7 @@ export function UsersTableShell({
         enableSorting: false,
         enableHiding: false,
         enableResizing: true,
+        size: 10,
       },
       {
         accessorKey: "userName",
