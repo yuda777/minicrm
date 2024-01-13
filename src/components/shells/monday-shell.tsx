@@ -4,7 +4,7 @@ import * as React from "react"
 import { type ColumnDef } from "unstyled-table"
 import { formatDate } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DataTable } from "@/components/data-table/data-table-customer"
+import { DataTable } from "@/components/data-table/data-table-monday"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
 
