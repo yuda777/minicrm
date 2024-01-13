@@ -30,25 +30,27 @@ const IconStatus = ({ status, wthLabel = false, toolTips = false, className, ...
     },
   ]
   const SelectedStatus = statusArr.find(val => val.value === status)
-  const Vbn = () => {
-    return <div></div>
-  }
+  const divSelectedStatus = SelectedStatus && (<div className="flex">
+    <SelectedStatus.icon aria-hidden="true" className={cn(SelectedStatus?.color, "h-5 w-5")} />
+    <div {...props} className={cn(className, " ml-2")}>{wthLabel ? SelectedStatus?.text : null}</div>
+  </div>)
   return (SelectedStatus &&
-    <TooltipProvider>
+    toolTips ?
+    (<TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          {/* <Button variant={"pasive"} size={"plain"}> */}
-          <div className="flex">
-            <SelectedStatus.icon aria-hidden="true" className={cn(SelectedStatus?.color, "h-5 w-5")} />
-            <div {...props} className={cn(className, " ml-2")}>{wthLabel ? SelectedStatus?.text : null}</div>
-          </div>
-          {/* </Button> */}
+          <Button variant={"pasive"} size={"plain"}>
+            {divSelectedStatus}
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           {SelectedStatus?.text}
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
+    </TooltipProvider>) :
+    <div>
+      {divSelectedStatus}
+    </div>
   )
 }
 export default IconStatus

@@ -49,25 +49,34 @@ export function DataTableToolbar<TData>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div>
-              <Button
-                aria-label="Toggle columns"
-                variant="outline"
-                size="sm"
-                className="ml-auto h-8 bg-background"
-              >
-                {!isNaN(filterStatus) ?
-                  <div className="flex justify-between space-x-1">
-                    <IconStatus status={1 === filterStatus} wthLabel />
-                  </div >
-                  :
-                  <div>
-                    Status
-                  </div>}
-                <Icons.chevronDown
-                  className="ml-2 h-4 w-4"
-                  aria-hidden="true"
-                />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      aria-label="Toggle columns"
+                      variant="outline"
+                      size="sm"
+                      className="ml-auto h-8 bg-background"
+                    >
+                      {!isNaN(filterStatus) ?
+                        <div className="flex justify-between space-x-1">
+                          <IconStatus status={1 === filterStatus} wthLabel />
+                        </div >
+                        :
+                        <div>
+                          Status
+                        </div>}
+                      <Icons.chevronDown
+                        className="ml-2 h-4 w-4"
+                        aria-hidden="true"
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Status User
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </DropdownMenuTrigger>
           {!isNaN(filterStatus) && <div

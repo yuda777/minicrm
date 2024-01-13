@@ -150,10 +150,3 @@ export default async function ListCustomerPage({
     </Card>
   )
 }
-
-// customerName: string | null;
-//     email: string | null;
-//     phone: string | null;
-//     address: string | null;
-//     birthDate: string | null;
-//     createdAt: Date | null;
