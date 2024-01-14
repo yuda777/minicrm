@@ -20,7 +20,8 @@ import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { Icons } from "@/components/icons"
 import React from "react"
-import IconStatus from "@/components/icon-status"
+import IconStatus, { statusArr } from "@/components/icon-status"
+import { filter } from "d3"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -33,7 +34,9 @@ export function DataTableToolbar<TData>({
   const router = useRouter()
   const pathname = usePathname()
   const isFiltered = table.getState().columnFilters.length > 0
-  const filterStatus = Number(table.getColumn("userStatusActive")?.getFilterValue())
+  const filterStatus = table.getColumn("userStatusActive")?.getFilterValue() as boolean
+  console.log("filterStatus:", filterStatus);
+
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -58,9 +61,9 @@ export function DataTableToolbar<TData>({
                       size="sm"
                       className="ml-auto h-8 bg-background"
                     >
-                      {!isNaN(filterStatus) ?
+                      {filterStatus !== undefined ?
                         <div className="flex justify-between space-x-1">
-                          <IconStatus status={1 === filterStatus} wthLabel />
+                          <IconStatus status={filterStatus} wthLabel />
                         </div >
                         :
                         <div>
@@ -79,26 +82,25 @@ export function DataTableToolbar<TData>({
               </TooltipProvider>
             </div>
           </DropdownMenuTrigger>
-          {!isNaN(filterStatus) && <div
+          {filterStatus !== undefined && <div
             className="cursor-pointer hover:bg-slate-600 p-1 rounded-sm bg-background"
             onClick={() => {
               table.getColumn("userStatusActive")?.setFilterValue(null)
-              console.log("asdas");
             }}
           >
             <Icons.close className=" h-4 w-4" />
           </div>}
           <DropdownMenuContent align="end" className="">
             {
-              optStatus.map((val) => {
+              statusArr.map((val, index) => {
                 return (
                   <DropdownMenuCheckboxItem
-                    key={val}
+                    key={index}
                     className="capitalize"
-                    checked={val === filterStatus}
-                    onCheckedChange={() => table.getColumn("userStatusActive")?.setFilterValue(val)}
+                    checked={val.value === filterStatus}
+                    onCheckedChange={() => table.getColumn("userStatusActive")?.setFilterValue(val.value)}
                   >
-                    <IconStatus status={val === 1} wthLabel />
+                    <IconStatus status={val.value} wthLabel />
                   </DropdownMenuCheckboxItem>
                 )
               })}

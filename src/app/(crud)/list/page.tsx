@@ -38,7 +38,9 @@ export default async function ListUserPage({
   searchParams,
 }: ProductsPageProps) {
   const { page, per_page, sort, name, status, date_range } = searchParams
-  const statusFilter = status as "1" | "0" | undefined
+  // const statusFilter = status as boolean
+  // const statusFilter = typeof status === 'string' ? status === 'true' : undefined;
+  const statusFilter = typeof status === 'string' && ['true', 'false'].includes(status) ? status === 'true' : undefined;
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
   // Number of items to skip
@@ -109,8 +111,8 @@ export default async function ListUserPage({
               lte(users.createdAt, end_date.toISOString())
             )
             : undefined,
-          statusFilter
-            ? eq(users.statusActive, Number(statusFilter) === 1)
+          statusFilter !== undefined
+            ? eq(users.statusActive, statusFilter)
             : undefined
         )
       )
@@ -142,8 +144,8 @@ export default async function ListUserPage({
               lte(users.createdAt, end_date.toISOString())
             )
             : undefined,
-          statusFilter
-            ? eq(users.statusActive, Number(statusFilter) === 1)
+          statusFilter !== undefined
+            ? eq(users.statusActive, statusFilter)
             : undefined
         )
       )

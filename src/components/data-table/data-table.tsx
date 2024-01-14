@@ -73,10 +73,10 @@ export function DataTable<TData, TValue>({
   const name = searchParams?.get("name")
   const status = searchParams?.get("status")
   const [column, order] = sort?.split(".") ?? []
-
+  const statusFilter = typeof status === 'string' && ['true', 'false'].includes(status) ? status === 'true' : undefined;
   // Create query string
   const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
+    (params: Record<string, string | number | boolean | null>) => {
       const newSearchParams = new URLSearchParams(searchParams?.toString())
       for (const [key, value] of Object.entries(params)) {
         if (value === null) {
@@ -102,10 +102,10 @@ export function DataTable<TData, TValue>({
       value: name
     });
   }
-  if (status) {
+  if (statusFilter) {
     defaultFilters.push({
       id: 'userStatusActive',
-      value: status
+      value: statusFilter
     });
   }
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -162,7 +162,9 @@ export function DataTable<TData, TValue>({
     500
   )
 
-  const statusValue = columnFilters.find((f) => f.id === "userStatusActive")?.value as string
+  const statusValue = columnFilters.find((f) => f.id === "userStatusActive")?.value as boolean
+  console.log("statusValue:", statusValue);
+
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
