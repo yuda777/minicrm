@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+// } from "@/components/ui/dropdown"
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +22,7 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 import { Icons } from "@/components/icons"
 import React from "react"
 import IconStatus, { statusArr } from "@/components/icon-status"
-import { filter } from "d3"
+import { pointer } from "d3"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -35,7 +36,6 @@ export function DataTableToolbar<TData>({
   const pathname = usePathname()
   const isFiltered = table.getState().columnFilters.length > 0
   const filterStatus = table.getColumn("userStatusActive")?.getFilterValue() as boolean
-  console.log("filterStatus:", filterStatus);
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
@@ -51,36 +51,31 @@ export function DataTableToolbar<TData>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      aria-label="Toggle columns"
-                      variant="outline"
-                      size="sm"
-                      className="ml-auto h-8 bg-background"
-                    >
-                      {filterStatus !== undefined ?
-                        <div className="flex justify-between space-x-1">
-                          <IconStatus status={filterStatus} wthLabel />
-                        </div >
-                        :
-                        <div>
-                          Status
-                        </div>}
-                      <Icons.chevronDown
-                        className="ml-2 h-4 w-4"
-                        aria-hidden="true"
-                      />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Status User
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto h-8 bg-background"
+            >
+              {filterStatus !== undefined ?
+                <div className="flex justify-between space-x-1">
+                  <IconStatus status={filterStatus} wthLabel />
+                  <Icons.close
+                    className="h-5 w-5 rounded-sm hover:bg-slate-500"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Stop the event propagation here
+                      console.log("Button Close clicked");
+                    }}
+                  />
+                </div>
+                :
+                <div>
+                  Status
+                </div>}
+              <Icons.chevronDown
+                className="ml-2 h-4 w-4"
+                aria-hidden="true"
+              />
+            </Button>
           </DropdownMenuTrigger>
           {filterStatus !== undefined && <div
             className="cursor-pointer hover:bg-slate-600 p-1 rounded-sm bg-background"
@@ -88,7 +83,7 @@ export function DataTableToolbar<TData>({
               table.getColumn("userStatusActive")?.setFilterValue(null)
             }}
           >
-            <Icons.close className=" h-4 w-4" />
+
           </div>}
           <DropdownMenuContent align="end" className="">
             {

@@ -163,8 +163,6 @@ export function DataTable<TData, TValue>({
   )
 
   const statusValue = columnFilters.find((f) => f.id === "userStatusActive")?.value as boolean
-  console.log("statusValue:", statusValue);
-
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
