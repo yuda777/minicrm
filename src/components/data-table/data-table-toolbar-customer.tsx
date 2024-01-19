@@ -23,13 +23,22 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
 } from "@/components/ui/command"
-import React from "react"
+import React, { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { createUserSchema, userSchema } from "@/lib/validations/user"
 import { cn } from "@/lib/utils"
@@ -42,6 +51,17 @@ type Inputs = z.infer<ReturnType<typeof createUserSchema>>
 function onSubmit(data: Inputs) {
 }
 
+interface Iconditional {
+  logical: "and" | "or",
+  column: string,
+  value: string
+}
+interface TableRow {
+  logic: string
+  field: string
+  condition: string
+  value: string
+}
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
@@ -53,6 +73,35 @@ export function DataTableToolbar<TData>({
     defaultValues: {
     }
   })
+  // ======================================================================================
+  const initialValue = {
+    logic: '',
+    field: '',
+    condition: '',
+    value: ''
+  }
+  const [tableData, setTableData] = useState<TableRow[]>([initialValue]);
+
+  const handleAddRow = () => {
+    setTableData([...tableData, initialValue]);
+  };
+
+  const handleRemoveRow = (index: number) => {
+    const updatedTableData = [...tableData];
+    updatedTableData.splice(index, 1);
+    setTableData(updatedTableData);
+  };
+
+  const handleInputChange = (index: number, field: keyof TableRow, value: string) => {
+    const updatedTableData = [...tableData];
+    updatedTableData[index][field] = value;
+    setTableData(updatedTableData);
+  };
+  const displayJSON = JSON.stringify(tableData, null, 2);
+
+  // ======================================================================================
+  // const condition = useState[]
+  const [condition, setCondition] = useState<Iconditional[]>([])
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -87,90 +136,115 @@ export function DataTableToolbar<TData>({
               Filter
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80">
+          <PopoverContent className="w-full">
             <Form {...form}>
               <form
                 onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
               >
-                <div className="grid gap-4 ">
-                  <div className="space-y-2">
-                    <h4 className="font-medium leading-none">Advance Filter</h4>
+                {/* ============================================================================================= */}
+                <div className="flex flex-col ">
+                  <div className="flex flex-col space-y-1 w-full">
+                    {tableData.map((row, index) => (
+                      <div
+                        className="flex  space-x-2"
+                        key={index}
+                      >
+                        <Select
+                          value={row.logic}
+                          onValueChange={(value) => handleInputChange(index, 'logic', value)}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {["And", "Or"].map((val, index) => (
+                                <SelectItem key={index}
+                                  value={val}
+                                >
+                                  {val}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={row.field}
+                          onValueChange={(value) => handleInputChange(index, 'field', value)}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {["customerName", "batchCode", "uploadDate", "bucketPosition"].map((val, index) => (
+                                <SelectItem key={index}
+                                  value={val}
+                                >
+                                  {val}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={row.condition}
+                          onValueChange={(value) => handleInputChange(index, 'condition', value)}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {[
+                                "is",
+                                "is not",
+                                "contain",
+                                "not contain"
+                              ].map((val, index) => (
+                                <SelectItem key={index}
+                                  value={val}
+                                >
+                                  {val}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          disabled={false}
+                          placeholder="value"
+                          value={row.value}
+                          onChange={(e) => handleInputChange(index, 'value', e.target.value)}
+                          className="h-8 w-full h-full "
+                        />
+                        <Button
+                          variant={"outline"}
+                          size={"sm"}
+                          onClick={() => handleRemoveRow(index)}
+                        >
+                          <Icons.close className="ml-2 h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                  <FormItem>
-                    <div className=" inline space-x-2">
-                      <FormLabel className=" align-middle">Where</FormLabel>
-                      <FormControl>
-                        <Popover >
-                          <PopoverTrigger asChild>
-                            <FormControl className="flex-none">
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "justify-between bg-background"
-                                )}
-                              >
-                                <div className="mr-auto">
-                                  Label
-                                </div>
-                                <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[200px] p-0">
-                            <Command>
-                              <CommandInput placeholder="Search Position..." />
-                              <CommandEmpty>No Position found.</CommandEmpty>
-                              <CommandGroup>
-                                <CommandItem>1</CommandItem>
-                                <CommandItem>2</CommandItem>
-                                <CommandItem>3</CommandItem>
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormControl>
-                        <Popover >
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "justify-between bg-background"
-                                )}
-                              >
-                                <div className="mr-auto">
-                                  Label
-                                </div>
-                                <Icons.chevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[200px] p-0">
-                            <Command>
-                              <CommandInput placeholder="Search Position..." />
-                              <CommandEmpty>No Position found.</CommandEmpty>
-                              <CommandGroup>
-                                <CommandItem>1</CommandItem>
-                                <CommandItem>2</CommandItem>
-                                <CommandItem>3</CommandItem>
-
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                    </div>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
+                  <Button
+                    variant={"outline"}
+                    size={"sm"}
+                    onClick={handleAddRow}
+                  >
+                    Add Row
+                  </Button>
+                  <div className="hidden">
+                    <h2>JSON Representation:</h2>
+                    <pre>{displayJSON}</pre>
+                  </div>
                 </div>
+                {/* ============================================================================================= */}
               </form>
             </Form>
           </PopoverContent>
         </Popover>
-
       </div>
       <div className="flex items-center space-x-2">
         <Button
