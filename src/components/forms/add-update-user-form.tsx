@@ -167,7 +167,6 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
     </div>
   )
 
-
   function onSubmit(data: Inputs) {
     const file: File | null = data.photo as unknown as File
     let fileImgName: string

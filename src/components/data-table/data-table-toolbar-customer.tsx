@@ -142,51 +142,55 @@ export function DataTableToolbar<TData>({
                 onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
               >
                 {/* ============================================================================================= */}
-                <div className="flex flex-col ">
+                <div className="flex flex-col space-y-1">
                   <div className="flex flex-col space-y-1 w-full">
                     {tableData.map((row, index) => (
                       <div
-                        className="flex  space-x-2"
+                        className="flex flex-row space-x-2"
                         key={index}
                       >
-                        <Select
-                          value={row.logic}
-                          onValueChange={(value) => handleInputChange(index, 'logic', value)}
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {["And", "Or"].map((val, index) => (
-                                <SelectItem key={index}
-                                  value={val}
-                                >
-                                  {val}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <Select
-                          value={row.field}
-                          onValueChange={(value) => handleInputChange(index, 'field', value)}
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {["customerName", "batchCode", "uploadDate", "bucketPosition"].map((val, index) => (
-                                <SelectItem key={index}
-                                  value={val}
-                                >
-                                  {val}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                        <div className="flex w-[150px] justify-center items-center">
+                          <Select
+                            value={row.logic}
+                            onValueChange={(value) => handleInputChange(index, 'logic', value)}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {["And", "Or"].map((val, index) => (
+                                  <SelectItem key={index}
+                                    value={val}
+                                  >
+                                    {val}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex w-[200px] justify-center items-center ">
+                          <Select
+                            value={row.field}
+                            onValueChange={(value) => handleInputChange(index, 'field', value)}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {["customerName", "batchCode", "uploadDate", "bucketPosition"].map((val, index) => (
+                                  <SelectItem key={index}
+                                    value={val}
+                                  >
+                                    {val}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <Select
                           value={row.condition}
                           onValueChange={(value) => handleInputChange(index, 'condition', value)}
@@ -216,7 +220,7 @@ export function DataTableToolbar<TData>({
                           placeholder="value"
                           value={row.value}
                           onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-                          className="h-8 w-full h-full "
+                          className="w-full h-full "
                         />
                         <Button
                           variant={"outline"}
@@ -249,8 +253,8 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center space-x-2">
         <Button
           aria-label="Add new item"
-          variant="outline"
-          size="sm"
+          variant={"outline"}
+          size={"sm"}
           className="h-8"
           onClick={() => router.push(`/upload`)}
         >

@@ -17,11 +17,6 @@ type FieldMapping = {
   table: string
   excel: keyof ExcelData
 }
-// export async function insertTables2() {
-//   const field = 'firstName'
-//   const data = { [field]: 'Dan23' }
-//   return await db.insert(customer).values(data)
-// }
 
 interface insertTablesProps {
   excelData: {
@@ -60,11 +55,6 @@ export async function insertTables({
     })
     return mappedRow
   })
-  // const updateData = mappedData.map((customer) => ({
-  //   ...customer,
-  //   batchUploadId: batchUploadId,
-  // }))
-  // console.log(mappedData)
   return await db.insert(customer).values(mappedData)
 }
 

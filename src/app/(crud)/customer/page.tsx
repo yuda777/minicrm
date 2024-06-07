@@ -6,7 +6,6 @@ import { env } from "@/env.mjs"
 import dayjs from "dayjs"
 import { and, asc, desc, eq, gte, ilike, like, lte, sql } from "drizzle-orm"
 
-import { UsersTableShell } from "@/components/shells/users-table-shell"
 import {
   Card,
   CardContent,
@@ -37,6 +36,20 @@ export default async function ListCustomerPage({
   params,
   searchParams,
 }: CustomerPageProps) {
+  const logicwhere = [
+    {
+      "logic": "And",
+      "field": "customerName",
+      "condition": "contain",
+      "value": "yu"
+    },
+    {
+      "logic": "And",
+      "field": "batchCode",
+      "condition": "is",
+      "value": "1"
+    }
+  ]
   const { page, per_page, sort, name, date_range } = searchParams
 
   // Number of items per page
@@ -83,6 +96,9 @@ export default async function ListCustomerPage({
       .where(
         and(
           // Filter by name
+          typeof name === "string"
+            ? ilike(customer.customerName, `%${name}%`)
+            : undefined,
           typeof name === "string"
             ? ilike(customer.customerName, `%${name}%`)
             : undefined,

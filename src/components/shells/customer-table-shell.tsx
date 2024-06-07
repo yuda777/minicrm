@@ -28,9 +28,7 @@ export function CustomersTableShell({
   data,
   pageCount,
 }: CustomersTableShellProps) {
-  const [isPending, startTransition] = React.useTransition()
 
-  // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<ICustomer, unknown>[]>(
     () => [
       {

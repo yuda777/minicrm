@@ -33,7 +33,7 @@ export default function RootLayout({
                   <SidebarNav items={dashboardConfig.sidebarNav} />
                 </ScrollArea>
                 <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <p className="text-sm text-gray-500">&copy; 2023 Project</p>
+                  <p className="text-sm text-gray-500">&copy; 2024 Project</p>
                 </div>
               </aside>
               <div>
