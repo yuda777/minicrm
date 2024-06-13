@@ -34,10 +34,10 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
             >
               <span
                 className={cn(
-                  "group flex w-full items-center border border-transparent py-2 pl-6 pr-2",
+                  "group hover:bg-sidemenu-secondary/50 py-4 pl-6 flex w-full items-center ",
                   pathname === item.href
-                    ? "font-medium text-white bg-[#0f1729]"
-                    : "text-sidemenu-foreground",
+                    ? "bg-sidemenu-secondary border-l-4 border-l-primary pl-5"
+                    : "",
                   item.disabled && "pointer-events-none opacity-60"
                 )}
               >

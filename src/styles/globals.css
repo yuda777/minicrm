@@ -25,44 +25,36 @@
     --input: 220 13% 91%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
-    --sidemenu:217, 33%, 17%;
-    --sidemenu-foreground:214, 32%, 91%;
-    --dwhite:210, 40%, 96%;
-    --dwhite-foreground:215, 19%, 35%;
-    --header: 0 0% 100%;
-    --header-foreground: 224 71.4% 4.1%;
+    --sidemenu: 217, 33%, 17%;
+    --sidemenu-foreground: 214, 32%, 91%;
+    --dwhite: 210, 40%, 96%;
+    --dwhite-foreground: 215, 19%, 35%;
   }
 
   .dark {
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --gradient: 217°, 33%, 17%;
-    --background: 222, 47%, 11%; /*210 26% 7.84%;  222°, 47%, 11% */
-    --foreground: 210 4% 99.9%;
-    --muted: 210 20% 29.4%;
-    --muted-foreground: 210 4% 59.8%;
-    --popover: 210 57% 12.74%;
-    --popover-foreground: 210 4% 99.9%;
-    --card: 217, 33%, 17%; /* 210 57% 12.74%; */
-    --card-foreground: 210 4% 99.9%;
-    --border: 210 20% 29.4%;
-    --input: 210 20% 29.4%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 217, 33%, 17%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
     --primary: 254 84% 67%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 20% 29.4%;
-    --secondary-foreground: 210 4% 99.9%;
-    --accent: 210 20% 29.4%;
-    --accent-foreground: 210 4% 99.9%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 4% 99.9%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215, 25%, 27%;
+    --input: 222, 47%, 11%;
     --ring: 263.4 70% 50.4%;
-    --sidemenu:217, 33%, 17%;
-    --sidemenu-foreground:214, 32%, 91%;
-    --dwhite:222, 47%, 11%;
-    --dwhite-foreground:215, 19%, 35%;
-    --header:219, 38%, 15%; /* 222, 47%, 11%; */
-    --header-foreground:215, 19%, 35%;
-
+    /* --sidemenu: 217, 33%, 17%;
+    --sidemenu-foreground: 214, 32%, 91%; */
+    --dwhite: 222, 47%, 11%;
+    --dwhite-foreground: 215, 19%, 35%;
   }
 }
   @layer base {
@@ -77,3 +69,17 @@
   body {
     font-family: 'Inter',  sans-serif;
   }
+  .badge {
+    @apply bg-blue-500 text-white px-2 py-1 rounded-full flex items-center;
+    white-space: nowrap;
+  }
+  .popover-content-width-same-as-its-trigger {
+    @apply w-[var(--radix-popover-trigger-width)] max-h-[var(--radix-popover-content-available-height)];
+  }
+
+  
+.sidebar {
+  background-color: hsl(217, 33%, 17%);
+  color: hsl(214, 32%, 91%);
+}
+

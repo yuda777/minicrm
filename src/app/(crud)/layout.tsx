@@ -28,7 +28,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <div className="flex min-h-screen flex-col">
             <div className="flex-1 items-start lg:grid lg:grid-cols-[240px_minmax(0,1fr)] ">
-              <aside className="sticky top-0 font-medium bg-sidemenu text-sm font-inter z-30 hidden h-[100vh] w-full shrink-0 overflow-y-auto border-r lg:block">
+              <aside className="sticky top-0 font-medium bg-sidemenu text-sidemenu-foreground text-sm font-inter z-30 hidden h-[100vh] w-full shrink-0 overflow-y-auto border-r lg:block">
                 <ScrollArea className="">
                   <SidebarNav items={dashboardConfig.sidebarNav} />
                 </ScrollArea>

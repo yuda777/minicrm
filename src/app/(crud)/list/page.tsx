@@ -1,12 +1,21 @@
-import { type Metadata } from "next"
-import { notFound } from "next/navigation"
-import { db } from "@/db"
-import { type Position, users, type User, position } from "@/db/schema"
-import { env } from "@/env.mjs"
-import dayjs from "dayjs"
-import { ColumnBuilder, and, asc, desc, eq, gte, ilike, like, lte, sql } from "drizzle-orm"
+'use client'
+import AdvanceSearch from '@/components/AdvanceSearch'
+import { type ColumnDef } from "unstyled-table"
 
-import { UsersTableShell } from "@/components/shells/users-table-shell"
+import { DataTable } from "@/components/data-table/data-table"
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
+import { userPositionWithSuperior } from '@/types'
+
+import React, { FC } from 'react'
+import { Badge } from '@/components/ui/badge2'
+import Link from 'next/link'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Icons } from '@/components/icons'
+import { colorScheme, formatDate } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+// import XLSX from 'xlsx'
+import { utils, writeFile } from 'xlsx';
 import {
   Card,
   CardContent,
@@ -15,162 +24,187 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { alias } from "drizzle-orm/pg-core"
-import { userPositionWithSuperior } from "@/types"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Products",
-  description: "Manage your products",
+interface pageProps {
+
 }
 
-interface ProductsPageProps {
-  params: {
-    storeId: string
-  }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
-}
+const page: FC<pageProps> = ({ }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [value, setValue] = React.useState<userPositionWithSuperior[]>([])
 
-export default async function ListUserPage({
-  params,
-  searchParams,
-}: ProductsPageProps) {
-  const { page, per_page, sort, name, status, date_range } = searchParams
-  // const statusFilter = status as boolean
-  // const statusFilter = typeof status === 'string' ? status === 'true' : undefined;
-  const statusFilter = typeof status === 'string' && ['true', 'false'].includes(status) ? status === 'true' : undefined;
-  // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
-  // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
-  // Column and order to sort by
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-        keyof userPositionWithSuperior | undefined,
-        "asc" | "desc" | undefined
-      ])
-      : []
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const columns = React.useMemo<ColumnDef<userPositionWithSuperior, unknown>[]>(
+    () => [
+      {
+        // Column for row selection
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) => {
+              table.toggleAllPageRowsSelected(!!value)
+            }}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => {
+              row.toggleSelected(!!value)
+            }}
+            aria-label="Select row"
+          />
+        ),
+        // Disable column sorting for this column
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "userName",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Name" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <Link className="flex items-center" href={`/list/${row.original.userId}`}>
+              <Avatar className="h-8 w-8 mr-2">
+                <AvatarImage
+                  src={`/face/${row.original.userPhoto}`}
+                  alt={""}
+                />
+                <AvatarFallback>
+                  <Icons.defaultUser className="h-16 w-16" aria-hidden="true" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flextinline-flex content-center justify-center items-center">
+                <div>
+                  {row.original.userName}
+                </div>
+                <div className="text-sm text-slate-500">
+                  {row.original.userEmail}
+                </div>
+              </div>
+            </Link>
+          )
+        }
+      },
+      {
+        accessorKey: "userTitleDesc",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Position" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "default"} className="capitalize whitespace-nowrap" >
+              {row.original.userTitleDesc}
+            </Badge >
+          )
+        }
+      },
+      {
+        accessorKey: "superiorName",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Supervisor" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex flex-col">
+              <div>
+                {row.original.superiorName}
+              </div>
+              <div>
+                {
+                  (row.original.superiorDeptDesc)
+                    ? <Badge variant={(row.original.userDeptCode) ? colorScheme(row.original.userDeptCode) : "default"} className="capitalize whitespace-nowrap" >
+                      {row.original.superiorTitleDesc}
+                    </Badge >
+                    : null
+                }
+              </div>
+            </div>
+          )
 
-  const [start_date, end_date] =
-    typeof date_range === "string"
-      ? date_range.split("to").map((date) => dayjs(date).toDate())
-      : []
+        }
+      },
+      {
+        accessorKey: "userPhone",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Phone Number" />
+        ),
+      },
+      {
+        accessorKey: "userHireDate",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Hire Date" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue() as Date),
+        enableColumnFilter: false,
+      },
+    ],
+    []
+  )
 
-  // Transaction is used to ensure both queries are executed in a single transaction
-  const { userPositionWithSuperior, totalUsers } = await db.transaction(async (tx) => {
-    const tp = alias(position, 'tp')
-    const tp2 = alias(position, 'tp2')
-    const tu2 = alias(users, 'tu2')
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const exportToExcel = React.useCallback((data: userPositionWithSuperior[]) => {
+    const ws = utils.json_to_sheet(data);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    // writeFile(wb, "SheetJSReactAoO.xlsx");
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    const selectField = {
-      userId: users.userId,
-      parentId: users.parentId,
-      userName: users.name,
-      userTitleCode: tp.titleCode,
-      userTitleDesc: tp.titleDesc,
-      userDeptCode: tp.departementCode,
-      userDeptDesc: tp.departementDesc,
-      userPhoto: users.photo,
-      userEmail: users.email,
-      userPhone: users.phoneNumber,
-      userHireDate: users.hireDate,
-      userStatusActive: users.statusActive,
-      superiorTitleCode: tp2.titleCode,
-      superiorTitleDesc: tp2.titleDesc,
-      superiorDeptCode: tp2.departementCode,
-      superiorDeptDesc: tp2.departementDesc,
-      superiorName: tu2.name,
-    }
+    // Format the timestamp
+    const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
 
-    const userPositionWithSuperior = await tx
-      .select(selectField)
-      .from(users)
-      .limit(limit)
-      .offset(offset)
-      .leftJoin(tp, eq(users.positionId, tp.positionId))
-      .leftJoin(tu2, eq(users.parentId, tu2.userId))
-      .leftJoin(tp2, eq(tp2.positionId, tu2.positionId))
-      .where(
-        and(
-          // Filter by name
-          typeof name === "string"
-            ? ilike(users.name, `%${name}%`)
-            : undefined,
-          // Filter by created date
-          start_date && end_date
-            ? and(
-              gte(users.createdAt, start_date.toISOString()),
-              lte(users.createdAt, end_date.toISOString())
-            )
-            : undefined,
-          statusFilter !== undefined
-            ? eq(users.statusActive, statusFilter)
-            : undefined
-        )
-      )
-      .orderBy(
-        column
-          ? order === "asc"
-            ? asc(selectField[column])
-            : desc(selectField[column])
-          : sql`${users.updatedAt} DESC NULLS LAST`
-      )
-    const totalUsers = await tx
-      .select({
-        count: sql<number>`count(${users.userId})`,
-      })
-      .from(users)
-      .leftJoin(tp, eq(users.positionId, tp.positionId))
-      .leftJoin(tu2, eq(users.parentId, tu2.userId))
-      .leftJoin(tp2, eq(tp2.positionId, tu2.positionId))
-      .where(
-        and(
-          // Filter by name
-          typeof name === "string"
-            ? ilike(users.name, `%${name}%`)
-            : undefined,
-          // Filter by created date
-          start_date && end_date
-            ? and(
-              gte(users.createdAt, start_date.toISOString()),
-              lte(users.createdAt, end_date.toISOString())
-            )
-            : undefined,
-          statusFilter !== undefined
-            ? eq(users.statusActive, statusFilter)
-            : undefined
-        )
-      )
-    return {
-      userPositionWithSuperior,
-      totalUsers: Number(totalUsers[0]?.count) ?? 0,
-    }
-  })
-
-  const pageCount = Math.ceil(totalUsers / limit)
-
+    // Create the filename
+    const filename = `data_${timestamp}.xlsx`;
+    writeFile(wb, filename);
+  }, []);
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">User List</CardTitle>
-        <CardDescription>
-          Choose user name to edit
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <UsersTableShell
-          data={userPositionWithSuperior}
-          pageCount={pageCount}
-        />
-      </CardContent>
-    </Card>
+    <>
+      <Card>
+        <CardHeader className="s  pace-y-1">
+          <CardTitle className="text-2xl">Advanced Search</CardTitle>
+          <CardDescription>
+            Choose user name to edit
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <AdvanceSearch
+            setValue={setValue}
+          />
+        </CardContent>
+      </Card >
+      <Card>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl">User List</CardTitle>
+          <CardDescription>
+            Choose user name to edit
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <DataTable columns={columns} data={value} pageCount={-1} />
+          <Button
+            onClick={() => {
+              exportToExcel(value)
+            }}
+            className='w-32 mt-4'
+          >
+            Export Excel
+          </Button>
+          {/* <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(value, null, 2)}</code>
+          </pre> */}
+        </CardContent>
+      </Card>
+    </>
   )
 }
+export default page

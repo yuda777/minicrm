@@ -2,6 +2,22 @@ import { User, Position } from '@/db/schema'
 import { type FileWithPath } from 'react-dropzone'
 import { type z } from 'zod'
 import { type Icons } from '@/components/icons'
+import { DateRange } from 'react-day-picker'
+import { conditionValues, operatorValues } from '@/config/advanceSearch'
+
+const conditionValuesTuple = conditionValues as [string, ...string[]]
+const operatorValuesTuple = operatorValues as [string, ...string[]]
+type Condition = (typeof conditionValuesTuple)[number]
+type Operator = (typeof operatorValuesTuple)[number]
+export const typeValues = [
+  'string',
+  'number',
+  'boolean',
+  'date',
+  'option',
+  'array',
+] as const
+type TypeValue = (typeof typeValues)[number]
 
 export interface NavItem {
   title: string
@@ -13,6 +29,39 @@ export interface NavItem {
   description?: string
 }
 
+export type userPositionType = {
+  id: number
+  parentId: number
+  titleCode: string
+  titleDesc: string
+  departementCode: string
+  departementDesc: string
+  name: string
+  photo: string
+}
+
+export type tableColumnsType = {
+  columnDataType?: TypeValue
+  label: string
+  tableName?: string | undefined
+  value: string
+}
+export type IParamSearch = {
+  paramSearch: {
+    condition: Condition
+    fieldName: string
+    tableName?: string | undefined
+    typeValue?: TypeValue
+    operator?: Operator | undefined
+    fieldValue:
+      | string
+      | number
+      | boolean
+      | DateRange
+      | { from: Date | undefined; to?: Date | undefined }
+      | { value: string | number; label: string }[]
+  }[]
+}
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[]
 }
@@ -37,6 +86,9 @@ export type SidebarNavItem = NavItemWithChildren
 export type Option = {
   label: string
   value: string
+  additionalInfo?: string
+  disable?: boolean
+  deptCode?: string
 }
 
 export type FileWithPreview = FileWithPath & {
@@ -59,18 +111,6 @@ export type SubscriptionPlan = {
   isCanceled?: boolean
 }
 
-// export type UserWithPosition = Pick<
-//   User,
-//   'userId' | 'name' | 'parentId' | 'photo'
-// > &
-//   Pick<
-//     Position,
-//     | 'titleCode'
-//     | 'titleDesc'
-//     | 'departementCode'
-//     | 'departementDesc'
-//     | 'colorCode'
-//   >
 export type UserWithPosition = {
   id: number
   parentId: number | null
@@ -101,13 +141,6 @@ export type userPositionWithSuperior = {
   superiorDeptDesc: string | null
   superiorName: string | null
 }
-// export interface IUser {
-//   id: number
-//   name: string | null
-//   parentId: number | null
-//   position: string | null
-//   photo: string | null
-// }
 
 export type UserData = {
   userid: number

@@ -16,9 +16,16 @@ export default {
           '2xl': '1400px',
         },
       },
+      boxShadow: {
+        'glow-blue': '0 0 10px rgba(59, 130, 246, 0.7)', // Tailwind's blue-500 with opacity
+      },
       colors: {
+        ccc: 'hsl(200, 50%, 50%)',
+        sbr: 'hsl(217, 33%, 17%)',
+        sbx: 'hsl(217, 33%, 25%)',
         sidemenu: {
-          DEFAULT: 'hsl(var(--sidemenu))',
+          DEFAULT: 'hsl(217, 33%, 17%)',
+          secondary: 'hsl(217, 33%, 25%)',
           foreground: 'hsl(var(--sidemenu-foreground))',
         },
         border: 'hsl(var(--border))',
@@ -58,10 +65,6 @@ export default {
           DEFAULT: 'hsl(var(--dwhite))',
           foreground: 'hsl(var(--dwhite-foreground))',
         },
-        header: {
-          DEFAULT: 'hsl(var(--header))',
-          foreground: 'hsl(var(--header-foreground))',
-        },
         tomato: {
           DEFAULT: 'hsl(9, 100%, 50%)', // HSL representation of tomato color
           50: 'hsl(9, 100%, 95%)',
@@ -75,6 +78,12 @@ export default {
           800: 'hsl(9, 100%, 10%)',
           900: 'hsl(9, 100%, 5%)',
         },
+        'sidebar-background': 'hsl(220, 14.3%, 10%)',
+        'sidebar-foreground': 'hsl(0, 0%, 100%)',
+        'sidebar-selected-bg': 'hsl(224.1, 30%, 85%)',
+        'sidebar-hover-bg': 'hsl(224.1, 30%, 80%)',
+        'sidebar-hover-fg': 'hsl(262.1, 5%, 15%)',
+        'glow-blue': 'hsl(220, 80%, 60%)', // Blue color for glow effect
       },
       borderRadius: {
         lg: 'var(--radius)',
