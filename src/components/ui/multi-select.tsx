@@ -14,7 +14,7 @@ import {
 import { cn, colorScheme } from '@/lib/utils';
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Badge } from '@/components/ui/badge2';
+import { Badge } from '@/components/ui/badge';
 import {
   Popover,
   PopoverContent,
@@ -110,7 +110,7 @@ export const MultiSelect = React.forwardRef<
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "inline-flex w-full rounded-md border min-h-11 h-auto px-2 py-2 items-center justify-between bg-inherit hover:bg-card",
+              "inline-flex w-full border-red-500 border min-h-11 h-auto px-2 py-2 items-center justify-between bg-inherit hover:bg-card",
               className
             )}
           >
@@ -192,7 +192,7 @@ export const MultiSelect = React.forwardRef<
                     >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          "mr-2 flex h-4 w-4 items-center justify-center  border border-primary",
                           isSelected
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"

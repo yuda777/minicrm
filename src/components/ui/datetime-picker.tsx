@@ -114,7 +114,7 @@ function CalendarGrid({ state, ...props }: CalendarGridProps) {
         <tr className="flex">
           {weekDays.map((day, index) => (
             <th
-              className="w-9 rounded-md text-[0.8rem] font-normal text-muted-foreground"
+              className="w-9  text-[0.8rem] font-normal text-muted-foreground"
               key={index}
             >
               {day}
@@ -254,7 +254,7 @@ function TimeField(props: AriaTimeFieldProps<TimeValue>) {
       {...fieldProps}
       ref={ref}
       className={cn(
-        'inline-flex h-10 w-full flex-1 rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'inline-flex h-10 w-full flex-1  border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         props.isDisabled && 'cursor-not-allowed opacity-50',
       )}
     >
@@ -344,7 +344,7 @@ const DateTimePicker = React.forwardRef<
       ref={divRef}
       className={cn(
         groupProps.className,
-        'flex items-center rounded-md border ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+        'flex items-center  border ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
       )}
     >
       <Popover open={props.isOpen} onOpenChange={props.onOpenChange}>

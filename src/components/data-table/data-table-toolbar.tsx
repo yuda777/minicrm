@@ -60,7 +60,7 @@ export function DataTableToolbar<TData>({
                 <div className="flex justify-between space-x-1">
                   <IconStatus status={filterStatus} wthLabel />
                   <Icons.close
-                    className="h-5 w-5 rounded-sm hover:bg-slate-500"
+                    className="h-5 w-5  hover:bg-slate-500"
                     onClick={(e) => {
                       e.stopPropagation(); // Stop the event propagation here
                       console.log("Button Close clicked");
@@ -78,7 +78,7 @@ export function DataTableToolbar<TData>({
             </Button>
           </DropdownMenuTrigger>
           {filterStatus !== undefined && <div
-            className="cursor-pointer hover:bg-slate-600 p-1 rounded-sm bg-background"
+            className="cursor-pointer hover:bg-slate-600 p-1  bg-background"
             onClick={() => {
               table.getColumn("userStatusActive")?.setFilterValue(null)
             }}

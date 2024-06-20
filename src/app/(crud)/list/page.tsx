@@ -7,7 +7,7 @@ import { DataTableColumnHeader } from '@/components/data-table/data-table-column
 import { userPositionWithSuperior } from '@/types'
 
 import React, { FC } from 'react'
-import { Badge } from '@/components/ui/badge2'
+import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -199,7 +199,7 @@ const page: FC<pageProps> = ({ }) => {
           >
             Export Excel
           </Button>
-          {/* <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          {/* <pre className="mt-2 w-[340px]  bg-slate-950 p-4">
             <code className="text-white">{JSON.stringify(value, null, 2)}</code>
           </pre> */}
         </CardContent>

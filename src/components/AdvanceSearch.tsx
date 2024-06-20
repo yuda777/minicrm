@@ -181,7 +181,7 @@ const AdvanceSearch = ({
       toast({
         title: 'Your submitted data',
         description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <pre className="mt-2 w-[340px]  bg-slate-950 p-4">
             <code className="text-white">{JSON.stringify(dataSubmit, null, 2)}</code>
           </pre>
         ),
@@ -391,7 +391,7 @@ const AdvanceSearch = ({
                 }}
               >
                 <Icons.close
-                  className="h-11 w-5 rounded-sm hover:bg-slate-500"
+                  className="h-11 w-5  hover:bg-slate-500"
                 />
               </Button>
             </div>

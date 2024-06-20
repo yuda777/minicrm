@@ -85,7 +85,7 @@ export default function DropzoneImage<TFieldValues extends FieldValues>({
       <div
         {...getRootProps()}
         className={cn(
-          "group relative mt-8 grid h-max w-full cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+          "group relative mt-8 grid h-max w-full cursor-pointer  border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
           "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           isDragActive && "border-muted-foreground/50 pointer-events-none opacity-60",
         )}

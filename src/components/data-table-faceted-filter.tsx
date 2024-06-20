@@ -56,7 +56,7 @@ export default function MultiSelectForm() {
     toast({
       title: "You submitted the following values:",
       description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+        <pre className="mt-2 w-[340px]  bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
@@ -77,7 +77,7 @@ export default function MultiSelectForm() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
-                        <div className="relative flex min-h-[36px] items-center justify-end rounded-md border data-[state=open]:border-ring">
+                        <div className="relative flex min-h-[36px] items-center justify-end  border data-[state=open]:border-ring">
                           <div className="relative mr-auto flex flex-grow flex-wrap items-center overflow-hidden px-3 py-1">
                             {selectedValues?.size > 0 ? (
                               options &&
@@ -101,7 +101,7 @@ export default function MultiSelectForm() {
                                           return next
                                         })
                                       }}
-                                      className="flex items-center rounded-sm px-[1px] hover:bg-accent hover:text-red-500"
+                                      className="flex items-center  px-[1px] hover:bg-accent hover:text-red-500"
                                     >
                                       <X size={14} />
                                     </span>
@@ -160,7 +160,7 @@ export default function MultiSelectForm() {
                               >
                                 <div
                                   className={cn(
-                                    "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                    "mr-2 flex h-4 w-4 items-center justify-center  border border-primary",
                                     isSelected
                                       ? "bg-primary text-primary-foreground"
                                       : "opacity-50 [&_svg]:invisible",

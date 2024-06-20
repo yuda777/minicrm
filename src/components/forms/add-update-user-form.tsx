@@ -41,7 +41,7 @@ import {
   useDropzone,
   type FileWithPath,
 } from "react-dropzone"
-import { Badge } from '../ui/badge2';
+import { Badge } from '../ui/badge';
 import { createUserSchema } from '@/lib/validations/user';
 
 type Inputs = z.infer<ReturnType<typeof createUserSchema>>
@@ -148,7 +148,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
     <div
       className={cn('flex-col')}
     >
-      <div className='w-40 h-40 p-1 box-border rounded-md border border-solid border-gray-300'>
+      <div className='w-40 h-40 p-1 box-border  border border-solid border-gray-300'>
         <Image
           width={150}
           height={150}
@@ -492,7 +492,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                       <div
                         {...getRootProps()}
                         className={cn(
-                          "group relative mt-8 grid h-max w-full cursor-pointer rounded-lg border-2 border-dashed",
+                          "group relative mt-8 grid h-max w-full cursor-pointer  border-2 border-dashed",
                           "border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
                           "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                           "focus-visible:ring-offset-2",

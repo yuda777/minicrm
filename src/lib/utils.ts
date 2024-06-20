@@ -8,7 +8,7 @@ import { format } from 'date-fns-tz'
 import { db } from '@/db'
 import { sql } from 'drizzle-orm'
 import { PositionColor } from '@/config/users'
-import { Badge, type BadgeVariant } from '@/components/ui/badge2'
+import { Badge, type BadgeVariant } from '@/components/ui/badge'
 
 const defaultTimeZone = 'Asia/Jakarta'
 

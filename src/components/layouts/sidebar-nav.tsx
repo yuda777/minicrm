@@ -48,7 +48,7 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
           ) : (
             <span
               key={index}
-              className="flex w-full cursor-not-allowed items-center rounded-md p-2 text-sidemenu-foreground hover:underline"
+              className="flex w-full cursor-not-allowed items-center  p-2 text-sidemenu-foreground hover:underline"
             >
               {item.title}
             </span>

@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { type ColumnDef } from "unstyled-table"
 import { colorScheme, formatDate } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge2"
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTable } from "@/components/data-table/data-table"
 import { Icons } from "@/components/icons"
@@ -62,7 +62,7 @@ export function UsersTableShell({
         enableResizing: true,
         cell: ({ row }) => {
           return (
-            <Link className="flex items-center py-2 px-3 rounded-sm hover:bg-accent" href={`/list/${row.original.userId}`}>
+            <Link className="flex items-center py-2 px-3  hover:bg-accent" href={`/list/${row.original.userId}`}>
               <Avatar className="h-8 w-8 mr-2">
                 <AvatarImage
                   src={`/face/${row.original.userPhoto}`}

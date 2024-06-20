@@ -4,7 +4,7 @@ import { OrgChart } from "d3-org-chart";
 import { UserWithPosition } from "@/types";
 import { getHeadUser } from "@/app/_actions/user";
 import { PositionColor } from "@/config/users";
-import { BadgeVariant } from "@/components/ui/badge2";
+import { BadgeVariant } from "@/components/ui/badge";
 function useDataOrgStrct() {
   const [data, setData] = React.useState<UserWithPosition[]>([]);
   const loadDataOrgStruct = async () => {
@@ -65,7 +65,7 @@ const OrganizationalChart = ({ }) => {
                   ${d.data.name} 
                 </div>
                 <div class="text-[${color.txLight}] dark:text-[${color.txtDark}] " style="margin-left:20px;margin-top:3px;font-size:10px;"> 
-                  <span class="rounded-sm px-2 bg-${colorPosition}-200 text-${colorPosition}-900 border border-${colorPosition}-700">${d.data.titleDesc}</span>
+                  <span class=" px-2 bg-${colorPosition}-200 text-${colorPosition}-900 border border-${colorPosition}-700">${d.data.titleDesc}</span>
                 </div>
               </div>
             </div>
@@ -90,14 +90,14 @@ const Cards = (d: any) => {
 
   return (
     <div className={`w-[${d.width}px] h-[${d.height}px] pt-[${imageDiffVert - 2}px] px-[1px]`}>
-      <div className={`font-inter bg-[${color}] dark:bg-[#1d283a] ml-[-1px] w-[${d.width - 2}px] h-[${d.height - imageDiffVert}px] rounded-sm border dark:border-white`}>
+      <div className={`font-inter bg-[${color}] dark:bg-[#1d283a] ml-[-1px] w-[${d.width - 2}px] h-[${d.height - imageDiffVert}px]  border dark:border-white`}>
         <div className={`flex justify-end mt-[5px] mr-[8px]`}>
           #${d.data.id}
         </div>
-        <div className={`bg-[${color}] dark:bg-[#1d283a] mt-[${-imageDiffVert - 20}px] ml-[${15}px] rounded-sm w-[50px] h-[50px]`} >
+        <div className={`bg-[${color}] dark:bg-[#1d283a] mt-[${-imageDiffVert - 20}px] ml-[${15}px]  w-[50px] h-[50px]`} >
         </div>
         <div className={`mt-[${-imageDiffVert - 20}px]`}>
-          <img src={`/face/${d.data.photo}`} className={`ml-[${20}px] rounded-sm border w-[40px] h-[40px]`} />
+          <img src={`/face/${d.data.photo}`} className={`ml-[${20}px]  border w-[40px] h-[40px]`} />
         </div>
         <div className={`text-sm text-[#08011E] ml-[20px] mt-[10px]`}>
           ${d.data.name}
