@@ -88,7 +88,7 @@ export const batchUploadRelations = relations(batchUpload, ({ one }) => ({
 
 export const users = pgTable('users', {
   userId: serial('user_id').primaryKey().notNull(),
-  name: varchar('name', { length: 100 }).notNull(),
+  userName: varchar('name', { length: 100 }).notNull(),
   positionId: integer('position_id').references(() => position.positionId, {
     onDelete: 'cascade',
   }),

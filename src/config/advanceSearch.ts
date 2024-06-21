@@ -75,12 +75,14 @@ export const operatorOptions: OperatorType[] = [
     label: 'Between',
   },
 ] as const
-export type TableUsedType = typeof tableAliases
+export type TableUsedType = typeof tableForQueryBuilder
+export type TableAlias =
+  (typeof tableForQueryBuilder)[keyof typeof tableForQueryBuilder]
 
 // export const tableUsed = { position, users }
 // export const tableUsed = [position, users]
 
-export const tableAliases = {
+export const tableForQueryBuilder = {
   tp: alias(position, 'tp'),
   tu: alias(users, 'tu'),
   tp2: alias(position, 'tp2'),
@@ -163,5 +165,8 @@ export const tableColumnsDesc: tableColumnsType[] = [
     value: 'description',
   },
 ]
+export const optionColumns = tableColumnsDesc
+  .filter((column) => column.columnDataType === 'option')
+  .map((column) => column.value)
 export const operatorValues = operatorOptions.map((option) => option.value)
 export const conditionValues = condition.map((option) => option.value)

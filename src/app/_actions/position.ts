@@ -1,7 +1,10 @@
 'use server'
 import { db } from '@/db'
-import { position, users } from '@/db/schema'
+import { position, users, type Position, type User } from '@/db/schema'
 import { isValidParamSearch } from '@/lib/validateJSON'
+import dayjs from 'dayjs'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
+
 import {
   and,
   eq,
@@ -9,6 +12,7 @@ import {
   inArray,
   getTableColumns,
   ilike,
+  like,
   lt,
   gt,
   lte,
@@ -17,6 +21,8 @@ import {
   not,
   or,
   between,
+  asc,
+  desc,
 } from 'drizzle-orm'
 import {
   PgColumn,
@@ -29,21 +35,52 @@ import {
   userPositionType,
   userPositionWithSuperior,
 } from '@/types'
-import { tableAliases } from '@/config/advanceSearch'
+import { tableForQueryBuilder as t } from '@/config/advanceSearch'
 import { format } from 'date-fns'
 
-export type UserType = InferSelectModel<typeof users>
+export type UserType = InferSelectModel<typeof t.tu>
 
-export const fetchUserWhere = async (
-  dataSubmit: IParamSearch,
-): Promise<userPositionWithSuperior[]> => {
-  const curFilters = []
-  const tableUsed = [tableAliases.tp, tableAliases.tu]
+interface ProductsPageProps {
+  dataSubmit: IParamSearch
+  searchParams: ReadonlyURLSearchParams
+}
+interface userListPromise {
+  userPositionWithSuperior: userPositionWithSuperior[]
+  pageCount: number
+}
+export default async function ListUserPage({
+  dataSubmit,
+  searchParams,
+}: ProductsPageProps): Promise<userListPromise> {
+  console.log('searchParams3:', searchParams)
+  const params = new URLSearchParams(searchParams)
+  const page = params?.get('page') ?? '1'
+  const sort = params?.get('sort')
+  const per_page = params?.get('per_page')
+  // const limit = searchParams.get('per_page') || '2'
+  const limit = typeof per_page === 'string' ? parseInt(per_page) : 2
+  console.log('limit:', limit)
+  const tableUsed = [t.tp, t.tu]
   const isValid: boolean = isValidParamSearch({ dataSubmit, tableUsed })
   if (!isValid) throw new Error('Invalid param search')
+  const offset =
+    typeof page === 'string'
+      ? parseInt(page) > 0
+        ? (parseInt(page) - 1) * limit
+        : 0
+      : 0
+  console.log('offset:', offset)
 
-  const buildCondition = (param: IParamSearch['paramSearch'][0]) => {
-    const colName = tableAliases[param.tableName][param.fieldName] as PgColumn
+  // Column and order to sort by
+  const [column, order] =
+    typeof sort === 'string'
+      ? (sort.split('.') as [
+          keyof User | undefined,
+          'asc' | 'desc' | undefined,
+        ])
+      : []
+  const ConditionBuilder = (param: IParamSearch['paramSearch'][0]) => {
+    const colName = t[param.tableName][param.fieldName] as PgColumn
     let formattedFrom
     let formattedTo
 
@@ -85,9 +122,8 @@ export const fetchUserWhere = async (
         return undefined
     }
   }
-  // curFilters.push(...cond)
   const conditions = dataSubmit.paramSearch.reduce((acc, param) => {
-    const condition = buildCondition(param)
+    const condition = ConditionBuilder(param)
     if (condition) {
       if (param.condition === 'not') {
         acc.push(not(condition))
@@ -105,59 +141,67 @@ export const fetchUserWhere = async (
     return acc
   }, [])
 
-  const userPosition = db
-    .select({
-      // id: tableAliases.tu.userId,
-      // parentId: tableAliases.tu.parentId,
-      // titleCode: tableAliases.tp.titleCode,
-      // titleDesc: tableAliases.tp.titleDesc,
-      // departementCode: tableAliases.tp.departementCode,
-      // departementDesc: tableAliases.tp.departementDesc,
-      // name: tableAliases.tu.name,
-      // photo: tableAliases.tu.photo,
-      userId: tableAliases.tu.userId,
-      parentId: tableAliases.tu.parentId,
-      userName: tableAliases.tu.name,
-      userTitleCode: tableAliases.tp.titleCode,
-      userTitleDesc: tableAliases.tp.titleDesc,
-      userDeptCode: tableAliases.tp.departementCode,
-      userDeptDesc: tableAliases.tp.departementDesc,
-      userPhoto: tableAliases.tu.photo,
-      userEmail: tableAliases.tu.email,
-      userPhone: tableAliases.tu.phoneNumber,
-      userHireDate: tableAliases.tu.hireDate,
-      userStatusActive: tableAliases.tu.statusActive,
-      superiorTitleCode: tableAliases.tp2.titleCode,
-      superiorTitleDesc: tableAliases.tp2.titleDesc,
-      superiorDeptCode: tableAliases.tp.departementCode,
-      superiorDeptDesc: tableAliases.tp.departementDesc,
-      superiorName: tableAliases.tu2.name,
-    })
-    .from(tableAliases.tu)
-    .leftJoin(
-      tableAliases.tp,
-      eq(tableAliases.tp.positionId, tableAliases.tu.positionId),
-    )
-    .leftJoin(
-      tableAliases.tu2,
-      eq(tableAliases.tu.parentId, tableAliases.tu2.userId),
-    )
-    .leftJoin(
-      tableAliases.tp2,
-      eq(tableAliases.tp2.positionId, tableAliases.tu2.positionId),
-    )
+  // Transaction is used to ensure both queries are executed in a single transaction
+  const { userPositionWithSuperior, totalUsers } = await db.transaction(
+    async (tx) => {
+      const userPositionWithSuperior = await tx
+        .select({
+          userId: t.tu.userId,
+          parentId: t.tu.parentId,
+          userName: t.tu.userName,
+          userTitleCode: t.tp.titleCode,
+          userTitleDesc: t.tp.titleDesc,
+          userDeptCode: t.tp.departementCode,
+          userDeptDesc: t.tp.departementDesc,
+          userPhoto: t.tu.photo,
+          userEmail: t.tu.email,
+          userPhone: t.tu.phoneNumber,
+          userHireDate: t.tu.hireDate,
+          userStatusActive: t.tu.statusActive,
+          superiorTitleCode: t.tp2.titleCode,
+          superiorTitleDesc: t.tp2.titleDesc,
+          superiorDeptCode: t.tp.departementCode,
+          superiorDeptDesc: t.tp.departementDesc,
+          superiorName: t.tu2.userName,
+        })
+        .from(t.tu)
+        .limit(limit)
+        .offset(offset)
+        .leftJoin(t.tp, eq(t.tp.positionId, t.tu.positionId))
+        .leftJoin(t.tu2, eq(t.tu.parentId, t.tu2.userId))
+        .leftJoin(t.tp2, eq(t.tp2.positionId, t.tu2.positionId))
+        .where(and(...(conditions ? conditions : [])))
+        .orderBy(
+          column && column in t.tu
+            ? order === 'asc'
+              ? asc(t.tu[column])
+              : desc(t.tu[column])
+            : desc(t.tu.createdAt),
+        )
 
-    .where(and(...conditions))
-    .orderBy(tableAliases.tu.userId)
-  // .toSQL()
-  // console.log('userPosition:', userPosition)
-  // return false
+      const totalUsers = await tx
+        .select({
+          count: sql<number>`count(${t.tu.userId})`,
+        })
+        .from(t.tu)
+        .leftJoin(t.tp, eq(t.tp.positionId, t.tu.positionId))
+        .leftJoin(t.tu2, eq(t.tu.parentId, t.tu2.userId))
+        .leftJoin(t.tp2, eq(t.tp2.positionId, t.tu2.positionId))
+        .where(and(...conditions))
 
-  return userPosition
+      return {
+        userPositionWithSuperior,
+        totalUsers: Number(totalUsers[0]?.count) ?? 0,
+      }
+    },
+  )
+  // console.log('userPositionWithSuperior', userPositionWithSuperior);
+
+  const pageCount = Math.ceil(totalUsers / limit)
+
+  return { userPositionWithSuperior, pageCount }
 }
-type fetchData2Type = {
-  tables?: PgTable[]
-}
+
 export async function fetchPosition() {
   const Performance = await db
     .select({
@@ -170,12 +214,7 @@ export async function fetchPosition() {
     .orderBy(position.positionId)
   return Performance
 }
-type columnTableType = {
-  columnName: string
-  columnDataType: string
-  label: string
-  tableName: string
-}
+
 export async function fetchDept() {
   const deptData = await db
     .selectDistinctOn([position.departementCode], {

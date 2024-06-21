@@ -1,3 +1,4 @@
+import React from 'react'
 import { env } from '@/env.mjs'
 import { clsx, type ClassValue } from 'clsx'
 import dayjs from 'dayjs'
@@ -5,15 +6,30 @@ import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
 import * as z from 'zod'
 import { format } from 'date-fns-tz'
-import { db } from '@/db'
-import { sql } from 'drizzle-orm'
 import { PositionColor } from '@/config/users'
 import { Badge, type BadgeVariant } from '@/components/ui/badge'
+import { utils, writeFile } from 'xlsx'
+import { userPositionWithSuperior } from '@/types'
 
 const defaultTimeZone = 'Asia/Jakarta'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export const exportToExcel = (data: userPositionWithSuperior[]) => {
+  const ws = utils.json_to_sheet(data)
+  const wb = utils.book_new()
+  utils.book_append_sheet(wb, ws, 'Data')
+
+  const now = new Date()
+  const timestamp = now
+    .toISOString()
+    .replace(/[-:.TZ]/g, '')
+    .slice(0, 14) // YYYYMMDDHHMMSS format
+
+  const filename = `data_${timestamp}.xlsx`
+  return writeFile(wb, filename)
 }
 
 export function colorScheme(departementCode: string) {

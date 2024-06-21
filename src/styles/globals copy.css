@@ -28,6 +28,7 @@
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(210 20% 98%);
     --border: hsl(220 13% 91%);
+    --border-hover: hsl(219, 13%, 71%);
     --input: hsl(220 13% 91%);
     --ring: hsl(262.1 83.3% 57.8%);
     --radius: 0.5rem;
@@ -55,6 +56,7 @@
     --destructive: hsl(0 62.8% 30.6%);
     --destructive-foreground: hsl(210 20% 98%);
     --border: hsl(215 25% 27%);
+    --border-hover:hsl(215, 24%, 55%);
     --input: hsl(222 47% 11%);
     --ring: hsl(263.4 70% 50.4%);
     /* --sidemenu: 217, 33%, 17%;
