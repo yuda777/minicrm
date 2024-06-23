@@ -46,6 +46,14 @@ export type tableColumnsType = {
   tableName?: string | undefined
   value: string
 }
+export type FieldValueType =
+  | string
+  | number
+  | boolean
+  | DateRange
+  | { from?: Date | undefined; to?: Date | undefined }
+  | { value?: string | number; label?: string }[]
+
 export type IParamSearch = {
   paramSearch: {
     condition: Condition
@@ -53,19 +61,16 @@ export type IParamSearch = {
     tableName?: string | undefined
     typeValue?: TypeValue
     operator?: Operator | undefined
-    fieldValue:
-      | string
-      | number
-      | boolean
-      | DateRange
-      | { from: Date | undefined; to?: Date | undefined }
-      | { value: string | number; label: string }[]
+    fieldValue: FieldValueType
   }[]
 }
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[]
 }
-
+export type columnWithPositionType = {
+  column: string
+  data: Option[]
+}
 export interface NavItemWithOptionalChildren extends NavItem {
   items?: NavItemWithChildren[]
 }
@@ -114,7 +119,7 @@ export type SubscriptionPlan = {
 export type UserWithPosition = {
   id: number
   parentId: number | null
-  name: string
+  userName: string
   photo: string | null
   titleCode: string | null
   titleDesc: string | null

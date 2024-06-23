@@ -52,24 +52,24 @@ export default async function ListUserPage({
   dataSubmit,
   searchParams,
 }: ProductsPageProps): Promise<userListPromise> {
-  console.log('searchParams3:', searchParams)
+  // console.log('searchParams3:', searchParams)
   const params = new URLSearchParams(searchParams)
   const page = params?.get('page') ?? '1'
   const sort = params?.get('sort')
   const per_page = params?.get('per_page')
   // const limit = searchParams.get('per_page') || '2'
   const limit = typeof per_page === 'string' ? parseInt(per_page) : 2
-  console.log('limit:', limit)
+  // console.log('limit:', limit)
   const tableUsed = [t.tp, t.tu]
   const isValid: boolean = isValidParamSearch({ dataSubmit, tableUsed })
-  if (!isValid) throw new Error('Invalid param search')
+  // if (!isValid) throw new Error('Invalid param search')
   const offset =
     typeof page === 'string'
       ? parseInt(page) > 0
         ? (parseInt(page) - 1) * limit
         : 0
       : 0
-  console.log('offset:', offset)
+  // console.log('offset:', offset)
 
   // Column and order to sort by
   const [column, order] =
@@ -178,7 +178,6 @@ export default async function ListUserPage({
               : desc(t.tu[column])
             : desc(t.tu.createdAt),
         )
-
       const totalUsers = await tx
         .select({
           count: sql<number>`count(${t.tu.userId})`,
@@ -188,7 +187,6 @@ export default async function ListUserPage({
         .leftJoin(t.tu2, eq(t.tu.parentId, t.tu2.userId))
         .leftJoin(t.tp2, eq(t.tp2.positionId, t.tu2.positionId))
         .where(and(...conditions))
-
       return {
         userPositionWithSuperior,
         totalUsers: Number(totalUsers[0]?.count) ?? 0,

@@ -101,7 +101,7 @@ export const tableColumnsDesc: tableColumnsType[] = [
     columnDataType: 'string',
     label: 'Name',
     tableName: 'tu',
-    value: 'name',
+    value: 'userName',
   },
   {
     columnDataType: 'number',

@@ -23,10 +23,14 @@ import { colorScheme, exportToExcel, formatDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { fetchUsers } from '@/app/_actions/user'
+import { usePositionData } from '@/hooks/usePositionData'
 
 
 const UserList = () => {
   const searchParams = useSearchParams()
+  const positionData = usePositionData()
+  // console.log("positionData:", positionData);
+
   const page = Number(searchParams?.get('page')) ?? 1
   const sort = searchParams?.get('sort')
 
@@ -177,7 +181,7 @@ const UserList = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <AdvanceSearch onSearch={handleSearch} tableUsed={tableUsed} />
+          <AdvanceSearch onSearch={handleSearch} options={positionData} />
         </CardContent>
       </Card >
       <Card>

@@ -50,7 +50,7 @@ export async function addNUpdateUserAction(
   if (userId) {
     await db
       .update(users)
-      .set({ ...updateObject, updatedAt: now })
+      .set({ ...updateObject, updatedAt: now.toISOString() })
       .where(eq(users.userId, userId)) // Adjust this condition based on your primary key
     revalidatePath('/list/[userId]', 'page')
   } else {

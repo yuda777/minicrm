@@ -108,9 +108,11 @@ export const MultiSelect = React.forwardRef<
           <Button
             ref={ref}
             {...props}
+            variant="outline"
+            role="checkbox"
             onClick={handleTogglePopover}
             className={cn(
-              "inline-flex w-full border-red-500 border min-h-11 h-auto px-2 py-2 items-center justify-between bg-inherit hover:bg-card",
+              " justify-between w-full min-h-10 h-auto bg-inherit hover:bg-card", //inline-flex w-full border min-h-11 h-auto px-2 py-2 items-center
               className
             )}
           >

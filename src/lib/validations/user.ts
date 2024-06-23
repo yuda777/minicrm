@@ -98,6 +98,10 @@ export const userSchema = z.object({
 })
 
 export const GroupOptionSchema = () => {
+  const dateRangeSchema = z.object({
+    from: z.date(),
+    to: z.date(),
+  })
   const columnWithPosition = usePositionData()
   return z.object({
     paramSearch: z.array(
@@ -112,10 +116,7 @@ export const GroupOptionSchema = () => {
             z.string(),
             z.number(),
             z.boolean(),
-            z.object({
-              from: z.date(),
-              to: z.date().optional(),
-            }),
+            dateRangeSchema,
             z.array(
               z.object({
                 value: z.union([z.string(), z.number()]),
@@ -124,6 +125,7 @@ export const GroupOptionSchema = () => {
             ),
           ]),
         })
+        .strict()
         .refine(
           (data) => {
             // console.log("data.typeValue:", data.typeValue);
