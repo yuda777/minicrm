@@ -108,7 +108,9 @@ export const GroupOptionSchema = () => {
       z
         .object({
           condition: z.enum(conditionValues as [string, ...string[]]),
-          fieldName: z.string().min(1),
+          fieldName: z
+            .string()
+            .min(1, { message: 'Field Name Cannot be empty' }),
           tableName: z.string().optional(),
           typeValue: z.enum(typeValues).optional(),
           operator: z.enum(operatorValues as [string, ...string[]]).optional(),
