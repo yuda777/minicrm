@@ -32,13 +32,12 @@ import {
   tableForQueryBuilder as t
 } from '@/config/advanceSearch';
 import { Input } from '@/components/ui/input';
-import ListUserPage from '@/app/_actions/position'
 import { IParamSearch, Option } from '@/types';
 import { DatePickerWithRange } from '@/components/ui/datePickerWithRange';
 import { DateRange } from 'react-day-picker';
 import { MultiSelect } from "@/components/ui/multi-select";
-import { usePositionData } from '@/hooks/usePositionData';
 import { GroupOptionSchema } from '@/lib/validations/user';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 interface AdvancedSearchProps {
@@ -198,6 +197,8 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
     }
     return InputVield
   }
+  const classFormMessage = "text-red-400 absolute bg-background border py-1 px-2"
+
   return (
     <Form {...form}>
       <form
@@ -224,7 +225,9 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
                           value="and"
                         />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.condition && (
+                        <FormMessage className={classFormMessage} />
+                      )}
                     </FormItem>
                   </div>
                 )}
@@ -248,7 +251,9 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
                           options={tableColumnsDesc}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.fieldName && (
+                        <FormMessage className={classFormMessage} />
+                      )}
                     </FormItem>
                   </div>
                 )}
@@ -268,7 +273,7 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
                         />
                       </FormControl>
                       {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.operator && (
-                        <FormMessage className="text-red-400" />
+                        <FormMessage className={classFormMessage} />
                       )}
                     </FormItem>
                   </div>
@@ -288,6 +293,9 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
                           value={field.value}
                         />
                       </FormControl>
+                      {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.fieldValue && (
+                        <FormMessage className={classFormMessage} />
+                      )}
                     </FormItem>
                   </div>
                 )}
