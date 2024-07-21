@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFieldArray, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, useFieldArray, Controller, SubmitHandler, useWatch } from 'react-hook-form';
 import * as z from 'zod';
 import * as React from 'react';
 import { LoadingButton } from '@/components/ui/loading-button';
@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import Dropdown from '@/components/Dropdown';
-import { FieldValueType, columnWithPositionType, userPositionWithSuperior } from '@/types'
+import { CellInfoType, ConfigPageType, FieldValueType, columnWithPositionType, optionDataType, tableColumnsType, userPositionWithSuperior } from '@/types'
 import {
   Select,
   SelectContent,
@@ -27,6 +27,7 @@ import {
   operatorOptions,
   tableColumnsDesc,
   condition,
+  filterColumnsByTable,
   TableUsedType,
   TableAlias,
   tableForQueryBuilder as t
@@ -36,27 +37,18 @@ import { IParamSearch, Option } from '@/types';
 import { DatePickerWithRange } from '@/components/ui/datePickerWithRange';
 import { DateRange } from 'react-day-picker';
 import { MultiSelect } from "@/components/ui/multi-select";
-import { GroupOptionSchema } from '@/lib/validations/user';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { GroupOptionSchema } from '@/lib/validateJSON';
 
 
 interface AdvancedSearchProps {
   onSearch: (dataSubmit: IParamSearch) => void;
-  options: columnWithPositionType[]
+  configPage: ConfigPageType[]
 }
 
-const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearchProps) => {
-  // const [columnWithPosition, setColumnWithPosition] = React.useState<columnWithPositionType[]>([])
-  // const vas = usePositionData();
-  // React.useEffect(() => {
-  //   const getPosition = async () => {
-  //     // eslint-disable-next-line react-hooks/rules-of-hooks
-  //     const pos = usePositionData();
-  //     setColumnWithPosition(pos);
-  //   }
-  //   getPosition();
-  // }, [])
-  // const columnWithPosition = usePositionData();
+const AdvanceSearch = ({
+  onSearch,
+  configPage
+}: AdvancedSearchProps) => {
   const searchSchema = GroupOptionSchema()
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
@@ -70,12 +62,61 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
     }
   });
 
-  const paramSearch = form.watch(`paramSearch`);
+  const generateOptions = (config: ConfigPageType[]) => {
+    return config.flatMap((tableConfig) =>
+      tableConfig.column.map((col) => ({
+        label: col.label,
+        value: `${tableConfig.alias}.${col.value}`,
+      }))
+    );
+  };
+  const findTableAndColumnDataType = (identifier: string, config: ConfigPageType[]) => {
+    const [alias, column] = identifier.split('.');
+    for (const tableConfig of config) {
+      if (tableConfig.alias === alias) {
+        const columnConfig = tableConfig.column.find(col => col.value === column);
+        if (columnConfig) {
+          return { table: tableConfig.table, columnDataType: columnConfig.columnDataType };
+        }
+      }
+    }
+    return null;
+  };
+  const findOptionData = (identifier: string, config: ConfigPageType[]) => {
+    const [alias, column] = identifier.split('.');
+    for (const tableConfig of config) {
+      if (tableConfig.alias === alias) {
+        return tableConfig.column.find(col => col.value === column);
+      }
+    }
+    return null;
+  };
+  const columnList = generateOptions(configPage)
+
+  // const paramSearch = form.watch(`paramSearch`);
   const { fields, remove, append } = useFieldArray({
     name: "paramSearch",
     control: form.control,
   })
-
+  // const useOperator = useWatch({
+  //   control: form.control,
+  //   name: "paramSearch.0.operator",
+  // });
+  // console.log("paramSearch:", paramSearch);
+  // const fieldNames = useWatch({
+  //   control: form.control,
+  //   name: "paramSearch",
+  // }).map(field => field.fieldName);
+  const useFieldNameWatcher = (index: number) => {
+    return useWatch({
+      control: form.control,
+      name: `paramSearch.${index}.fieldName`,
+    });
+  };
+  // const useFieldName = useWatch({
+  //   control: form.control,
+  //   name: "paramSearch.0.fieldName",
+  // })
   const onRemoveClick = (index: number) => {
     remove(index);
   };
@@ -85,6 +126,8 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
 
   const [loading, setLoading] = React.useState(false);
   const onSubmit: SubmitHandler<IParamSearch> = (dataSubmit: IParamSearch) => {
+    console.log("dataSubmit:", dataSubmit);
+
     onSearch(dataSubmit);
   }
 
@@ -125,26 +168,33 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
   const CompTypeValue = ({
     index,
     value,
-    onChange
+    onChange,
+    // cellInfo
   }: {
     index: number,
     value: FieldValueType,
-    onChange: (...event: any[]) => void
+    onChange: (...event: any[]) => void,
+    // cellInfo?: CellInfoType
   }) => {
     let InputVield;
-    const fieldName = paramSearch[index].fieldName
-    const columnWithPositionItem = columnWithPosition.find(item => item.column === fieldName);
+    const fieldName = useFieldNameWatcher(index);
+    // const tableName = paramSearch[index].tableName
+    // const fieldName = form.getValues(`paramSearch.${index}.fieldName`)
+    const columnWithOptionItem = findOptionData(fieldName, configPage);
 
     switch (form.getValues(`paramSearch.${index}.typeValue`)) {
       case "option":
-        InputVield = (columnWithPositionItem && (
+        InputVield = (
           <MultiSelect
-            options={columnWithPositionItem?.data}
-            defaultValue={value as Option[]}
+            options={columnWithOptionItem ? columnWithOptionItem?.optionData : []}
+            defaultValue={value as optionDataType[]}
+            styleArr={columnWithOptionItem ? columnWithOptionItem?.cellInfo : undefined}
             onChange={onChange}
             placeholder="Select Option"
+          // setIsPopoverOpen={setIsPopoverOpen}
+          // isPopoverOpen={isPopoverOpen}
           />
-        ))
+        )
         break;
       case "string":
         InputVield = (<Input
@@ -242,13 +292,15 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
                         <Dropdown
                           placeholder="select column"
                           onChange={(value) => {
-                            const dataColumn = tableColumnsDesc.find(item => item.value === value)
-                            form.setValue(`paramSearch.${index}.tableName`, dataColumn.tableName);
-                            form.setValue(`paramSearch.${index}.typeValue`, dataColumn.columnDataType);
+                            const { table, columnDataType } = findTableAndColumnDataType(value, configPage)
+                            if (table && columnDataType) {
+                              form.setValue(`paramSearch.${index}.tableName`, table || "");
+                              form.setValue(`paramSearch.${index}.typeValue`, columnDataType);
+                            }
                             field.onChange(value)
                             emptyCombobox(index)
                           }}
-                          options={tableColumnsDesc}
+                          options={columnList}
                         />
                       </FormControl>
                       {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.fieldName && (
@@ -328,10 +380,20 @@ const AdvanceSearch = ({ onSearch, options: columnWithPosition }: AdvancedSearch
               append({ condition: "and", fieldName: "", operator: undefined, fieldValue: [] })
               form.clearErrors()
             }}>
-            Add
+            <Icons.add
+              className='h-4 w-4 text-muted-foreground mr-2'
+              aria-hidden="true"
+            />
+            <span>Add</span>
           </Button>
           <LoadingButton loading={loading} type="submit">
-            Submit
+            <Icons.search
+              className='h-4 w-4 text-muted-foreground mr-2'
+              aria-hidden="true"
+            />
+            <span>
+              Search
+            </span>
           </LoadingButton>
         </div>
       </form >

@@ -1,5 +1,6 @@
 'use server'
-import { PgColumn } from 'drizzle-orm/pg-core'
+import { db } from '@/db'
+import { PgColumn, alias } from 'drizzle-orm/pg-core'
 import { TableAlias, tableForQueryBuilder as t } from '@/config/advanceSearch'
 import {
   and,
@@ -22,22 +23,29 @@ import {
   SQLWrapper,
 } from 'drizzle-orm'
 import { format } from 'date-fns-tz'
-import { IParamSearch } from '@/types'
-import { isValidParamSearch } from '@/lib/validateJSON'
+import {
+  ConfigPageType,
+  getOptionsDataType,
+  IParamSearch,
+  optionDataType,
+} from '@/types'
+import { isValidParamSearch, isValidParamSearch2 } from '@/lib/validateJSON'
+import { tableMapping } from './schema'
 
 export const queryWhereBuilder = ({
   dataSubmit,
-  tableUsed,
+  config,
 }: {
   dataSubmit: IParamSearch
-  tableUsed?: TableAlias[]
+  config: ConfigPageType[]
 }) => {
-  const isValid: boolean = isValidParamSearch({ dataSubmit, tableUsed })
-  if (!isValid) throw new Error('Invalid param search')
   const buildCondition = (param: IParamSearch['paramSearch'][0]) => {
-    const colName = t[param.tableName][param.fieldName] as PgColumn
-    let formattedFrom
-    let formattedTo
+    const [tableAlias, column] = param.fieldName.split('.')
+    const aliasResult = alias(tableMapping[param.tableName], tableAlias)
+    const colName = aliasResult[column] as PgColumn
+    // const colName = t[param.tableName][param.fieldName] as PgColumn
+    let formattedFrom: string | undefined
+    let formattedTo: string | undefined
 
     if (
       param.fieldValue &&
@@ -99,4 +107,27 @@ export const queryWhereBuilder = ({
     [],
   )
   return conditions
+}
+export const fetchDataForOptionMultiSelect = async ({
+  table,
+  fieldForValue,
+  fieldForLabel,
+  fieldAvatar,
+  styleId,
+}: getOptionsDataType): Promise<optionDataType[]> => {
+  const getData = await db
+    .select({
+      label: tableMapping[table][fieldForLabel],
+      value: tableMapping[table][fieldForValue],
+      ...(styleId ? { styleId: tableMapping[table][styleId] } : {}),
+      ...(fieldAvatar ? { avatar: tableMapping[table][fieldAvatar] } : {}),
+    })
+    .from(tableMapping[table])
+    .where(eq(tableMapping[table]?.statusActive, true))
+  return getData.map((row: any) => ({
+    label: row.label as string,
+    value: row.value as string,
+    ...(row.styleId ? { styleId: row?.styleId as string } : {}),
+    ...(row.avatar ? { avatar: row?.avatar as string } : {}),
+  }))
 }

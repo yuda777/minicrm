@@ -70,10 +70,7 @@ export function DataTable<TData, TValue>({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "10"
   const sort = searchParams?.get("sort")
-  const name = searchParams?.get("name")
-  const status = searchParams?.get("status")
   const [column, order] = sort?.split(".") ?? []
-  const statusFilter = typeof status === 'string' && ['true', 'false'].includes(status) ? status === 'true' : undefined;
   // Create query string
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | boolean | null>) => {
@@ -96,18 +93,6 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({})
   const defaultFilters = [];
 
-  if (name) {
-    defaultFilters.push({
-      id: 'userName',
-      value: name
-    });
-  }
-  if (statusFilter) {
-    defaultFilters.push({
-      id: 'userStatusActive',
-      value: statusFilter
-    });
-  }
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [...defaultFilters]
   )
@@ -156,24 +141,6 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
-  // Handle server-side column filtering
-  const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "userName")?.value,
-    500
-  )
-
-  const statusValue = columnFilters.find((f) => f.id === "userStatusActive")?.value as boolean
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : null,
-        status: statusValue ?? null
-      })}`
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName, columnFilters, status])
-
   const table = useReactTable({
     data,
     columns,
@@ -218,7 +185,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="whitespace-nowrap"
+                      className="whitespace-nowrap bg-background/80 "
                     >
                       <div>
                         {header.isPlaceholder

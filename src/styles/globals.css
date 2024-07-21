@@ -11,6 +11,8 @@
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
+    --headercard: 254 61% 86%;
+    --headercard-foreground: 253 36% 24%;
     --primary: 254 84% 67%;
     --primary-foreground: 210 40% 98%;
     --secondary: 220 14.3% 95.9%;
@@ -40,6 +42,8 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
+    --headercard: 263 72% 66%;
+    --headercard-foreground: 0 0% 100%;
     --primary: 254 84% 67%;
     --primary-foreground: 210 40% 98%;
     --secondary: 215 27.9% 16.9%;

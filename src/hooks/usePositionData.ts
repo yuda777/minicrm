@@ -1,3 +1,4 @@
+'use client'
 import { fetchDept, fetchPosition } from '@/app/_actions/position'
 import { columnWithPositionType } from '@/types'
 import { useState, useEffect } from 'react'
