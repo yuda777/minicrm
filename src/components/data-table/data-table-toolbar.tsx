@@ -40,67 +40,7 @@ export function DataTableToolbar<TData>({
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          disabled={false}
-          placeholder="Filter names..."
-          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("userName")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto h-8 bg-background"
-            >
-              {filterStatus !== undefined ?
-                <div className="flex justify-between space-x-1">
-                  <IconStatus status={filterStatus} wthLabel />
-                  <Icons.close
-                    className="h-5 w-5  hover:bg-slate-500"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Stop the event propagation here
-                      console.log("Button Close clicked");
-                    }}
-                  />
-                </div>
-                :
-                <div>
-                  Status
-                </div>}
-              <Icons.chevronDown
-                className="ml-2 h-4 w-4"
-                aria-hidden="true"
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          {filterStatus !== undefined && <div
-            className="cursor-pointer hover:bg-slate-600 p-1  bg-background"
-            onClick={() => {
-              table.getColumn("userStatusActive")?.setFilterValue(null)
-            }}
-          >
 
-          </div>}
-          <DropdownMenuContent align="end" className="">
-            {
-              statusArr.map((val, index) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={index}
-                    className="capitalize"
-                    checked={val.value === filterStatus}
-                    onCheckedChange={() => table.getColumn("userStatusActive")?.setFilterValue(val.value)}
-                  >
-                    <IconStatus status={val.value} wthLabel />
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
         {isFiltered && (
           <Button
             variant={"ghost"}

@@ -1,9 +1,8 @@
-import { User, Position } from '@/db/schema'
 import { type FileWithPath } from 'react-dropzone'
-import { type z } from 'zod'
 import { type Icons } from '@/components/icons'
 import { DateRange } from 'react-day-picker'
 import { conditionValues, operatorValues } from '@/config/advanceSearch'
+import { PgTable } from 'drizzle-orm/pg-core'
 
 const conditionValuesTuple = conditionValues as [string, ...string[]]
 const operatorValuesTuple = operatorValues as [string, ...string[]]
@@ -17,8 +16,51 @@ export const typeValues = [
   'option',
   'array',
 ] as const
-type TypeValue = (typeof typeValues)[number]
+export type TypeValue = (typeof typeValues)[number]
 
+export type getOptionsDataType = {
+  table: string
+  fieldForValue: string
+  fieldForLabel: string
+  fieldAvatar?: string
+  styleId?: string
+}
+export type ConfigPageType = {
+  table: string
+  alias: string
+  column: Column[]
+}
+export type tableColumnsDescType = {
+  columnDataType?: TypeValue
+  label: string
+  value: string
+}
+type Column = {
+  columnDataType: TypeValue
+  label: string
+  value: string
+  optionData?: optionDataType[]
+  fieldQuery?: fieldQueryType
+  cellInfo?: CellInfoType[]
+}
+type fieldQueryType = {
+  fieldForLabel: string
+  fieldForValue: string
+  fieldAvatar?: string
+  styleId?: string
+}
+export type CellInfoType = {
+  id: string
+  color?: string
+  icon?: string
+}
+
+export type optionDataType = {
+  value: string
+  label: string
+  styleId?: string
+  avatar?: string
+}
 export interface NavItem {
   title: string
   href?: string
@@ -69,6 +111,7 @@ export interface NavItemWithChildren extends NavItem {
 }
 export type columnWithPositionType = {
   column: string
+  columnRelation?: string
   data: Option[]
 }
 export interface NavItemWithOptionalChildren extends NavItem {
@@ -89,6 +132,14 @@ export type MainNavItem = NavItemWithOptionalChildren
 export type SidebarNavItem = NavItemWithChildren
 
 export type Option = {
+  label: string
+  value: string
+  additionalInfo?: string
+  disable?: boolean
+  deptCode?: string
+}
+
+export type MultiOptType = {
   label: string
   value: string
   additionalInfo?: string
@@ -147,6 +198,11 @@ export type userPositionWithSuperior = {
   superiorName: string | null
 }
 
+export type uriParamsType = {
+  limit: number
+  page: number
+  sort: string
+}
 export type UserData = {
   userid: number
   name: string

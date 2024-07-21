@@ -9,6 +9,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: 'bg-surface-200 text-foreground-light border border-strong',
+        none: 'bg-surface-200 text-foreground-light border border-card ',
         brand: 'bg-brand-200 text-brand-primary border border-brand-400',
         secondary:
           'bg-secondary hover:bg-secondary/80 border-transparent text-secondary-foreground',
@@ -23,7 +24,7 @@ const badgeVariants = cva(
         indigo: 'bg-indigo-200 text-indigo-900 border border-indigo-700',
         blue: 'bg-blue-200 text-blue-900 border border-blue-700',
         green: 'bg-green-200 text-green-900 border border-green-700',
-        grass: 'bg-grass-200 text-grass-900 border border-grass-700',
+        emerald: 'bg-emerald-200 text-emerald-900 border border-emerald-700',
         orange: 'bg-orange-200 text-orange-900 border border-orange-700',
         yellow: 'bg-yellow-200 text-yellow-900 border border-yellow-700',
         amber: 'bg-amber-200 text-amber-900 border border-amber-700',

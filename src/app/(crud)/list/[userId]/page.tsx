@@ -15,8 +15,8 @@ import AddNEditUserForm from "@/components/forms/add-update-user-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Manage Product",
-  description: "Manage your product",
+  title: "Edit User",
+  description: "Edit User",
 }
 
 interface UpdateProductPageProps {

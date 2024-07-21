@@ -23,6 +23,7 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
       </div>
       <div className="flex w-full flex-col gap-2">
         {items.map((item, index) => {
+
           const Icon = Icons[item.icon ?? "chevronLeft"]
           return item.href ? (
             <Link
@@ -35,7 +36,8 @@ export function SidebarNav({ items, setIsOpen, showPageWhenMenuClicked = false }
               <span
                 className={cn(
                   "group hover:bg-sidemenu-secondary/50 py-4 pl-6 flex w-full items-center ",
-                  pathname === item.href
+                  // pathname === item.href
+                  pathname.startsWith(item.href)
                     ? "bg-sidemenu-secondary border-l-4 border-l-primary pl-5"
                     : "",
                   item.disabled && "pointer-events-none opacity-60"

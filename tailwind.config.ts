@@ -28,6 +28,10 @@ export default {
           secondary: 'hsl(217, 33%, 25%)',
           foreground: 'hsl(var(--sidemenu-foreground))',
         },
+        headercard: {
+          DEFAULT: 'hsl(var(--headercard))',
+          foreground: 'hsl(var(--headercard-foreground))',
+        },
         border: {
           DEFAULT: 'hsl(var(--border))',
           hover: 'hsl(var(--border-hover))',
