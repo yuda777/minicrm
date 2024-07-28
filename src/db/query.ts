@@ -29,7 +29,7 @@ import {
   IParamSearch,
   optionDataType,
 } from '@/types'
-import { isValidParamSearch, isValidParamSearch2 } from '@/lib/validateJSON'
+import { isValidParamSearch } from '@/lib/validateJSON'
 import { tableMapping } from './schema'
 
 export const queryWhereBuilder = ({
@@ -56,7 +56,6 @@ export const queryWhereBuilder = ({
       formattedFrom = from ? format(from, 'yyyy-MM-dd') : undefined
       formattedTo = to ? format(to, 'yyyy-MM-dd') : formattedFrom
     }
-
     switch (param.operator) {
       case 'inArray':
         if (Array.isArray(param.fieldValue)) {
@@ -66,7 +65,12 @@ export const queryWhereBuilder = ({
           throw new Error('fieldValue must be an array')
         }
       case 'eq':
-        return eq(colName, param.fieldValue as string)
+        return eq(
+          colName,
+          param.typeValue === 'boolean'
+            ? param.fieldValue === 'true'
+            : (param.fieldValue as string),
+        )
       case 'lt':
         return lt(colName, param.fieldValue as number | Date)
       case 'gt':

@@ -5,6 +5,7 @@ import { UserWithPosition } from "@/types";
 import { getHeadUser } from "@/app/_actions/user";
 import { PositionColor } from "@/config/users";
 import { BadgeVariant } from "@/components/ui/badge";
+import ReactDOMServer from "react-dom/server";
 function useDataOrgStrct() {
   const [data, setData] = React.useState<UserWithPosition[]>([]);
   const loadDataOrgStruct = async () => {
@@ -23,7 +24,7 @@ function useDataOrgStrct() {
   }
 }
 function colorScheme(departementCode: string) {
-  const color = (departementCode) ? PositionColor.find(job => job.position.includes(departementCode)) : null
+  const color = (departementCode) ? PositionColor.find(job => job.id.includes(departementCode)) : null
   // const bv = (pc) ? pc.color ?? 'default' : 'default'
   return color?.color as BadgeVariant['variant']
 }
@@ -62,7 +63,7 @@ const OrganizationalChart = ({ }) => {
                   <img src="/face/${d.data.photo}" style="margin-left:${20}px;border-radius:100px;width:40px;height:40px;" />
                 </div>
                 <div class="text-[${color.txLight}] dark:text-[${color.txtDark}] " style="font-size:15px;margin-left:20px;margin-top:10px">  
-                  ${d.data.name} 
+                  ${d.data.userName} 
                 </div>
                 <div class="text-[${color.txLight}] dark:text-[${color.txtDark}] " style="margin-left:20px;margin-top:3px;font-size:10px;"> 
                   <span class=" px-2 bg-${colorPosition}-200 text-${colorPosition}-900 border border-${colorPosition}-700">${d.data.titleDesc}</span>
@@ -100,7 +101,7 @@ const Cards = (d: any) => {
           <img src={`/face/${d.data.photo}`} className={`ml-[${20}px]  border w-[40px] h-[40px]`} />
         </div>
         <div className={`text-sm text-[#08011E] ml-[20px] mt-[10px]`}>
-          ${d.data.name}
+          ${d.data.userName}
         </div>
         <div className="text-[#716E7B] ml-[20px] mt-[3px] text-sm">
           ${d.data.titleDesc}

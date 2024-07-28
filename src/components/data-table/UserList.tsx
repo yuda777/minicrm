@@ -23,7 +23,7 @@ import { colorScheme, exportToExcel, formatDate } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { fetchUsers } from '@/app/_actions/user'
-import { PositionColor } from '@/config/users'
+import { PositionColor, FIELD_NAME } from '@/config/users'
 
 interface IUser {
   userId: number
@@ -44,7 +44,8 @@ interface IUser {
   superiorDeptDesc: string | null
   superiorName: string | null
 }
-const CustomerList = () => {
+
+const UserList = () => {
   const searchParams = useSearchParams()
 
   // const positionData = useCustomerData()
@@ -195,9 +196,12 @@ const CustomerList = () => {
         enableHiding: false,
       },
       {
-        accessorKey: "tu_userName",
+        accessorKey: FIELD_NAME.userName.id,
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Name" />
+          <DataTableColumnHeader
+            column={column}
+            title={FIELD_NAME.userName.title}
+          />
         ),
         cell: ({ row }) => {
           return (
@@ -224,9 +228,9 @@ const CustomerList = () => {
         }
       },
       {
-        accessorKey: "tp_titleDesc",
+        accessorKey: FIELD_NAME.position.id,
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Position" />
+          <DataTableColumnHeader column={column} title={FIELD_NAME.position.title} />
         ),
         cell: ({ row }) => {
           return (
@@ -237,9 +241,9 @@ const CustomerList = () => {
         }
       },
       {
-        accessorKey: "tu2_userName",
+        accessorKey: FIELD_NAME.supervisor.id,
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Supervisor" />
+          <DataTableColumnHeader column={column} title={FIELD_NAME.supervisor.title} />
         ),
         cell: ({ row }) => {
           return (
@@ -261,16 +265,16 @@ const CustomerList = () => {
         }
       },
       {
-        accessorKey: "tu_phoneNumber",
+        accessorKey: FIELD_NAME.phoneNumber.id,
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Phone Number" />
+          <DataTableColumnHeader column={column} title={FIELD_NAME.phoneNumber.title} />
         ),
         cell: ({ row }) => row.original.userPhone,
       },
       {
-        accessorKey: "tu_hireDate",
+        accessorKey: FIELD_NAME.hireDate.id,
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Hire Date" />
+          <DataTableColumnHeader column={column} title={FIELD_NAME.hireDate.title} />
         ),
         cell: ({ row }) => formatDate(row.original.userHireDate),
         enableColumnFilter: false,
@@ -285,6 +289,8 @@ const CustomerList = () => {
       uriParams,
       dataSubmit
     });
+    console.log("result:", result);
+
     setData(result.userPositionWithSuperior);
     setPageCount(result.pageCount);
     // setCurrentPage(page);
@@ -340,4 +346,4 @@ const CustomerList = () => {
     </>
   )
 }
-export default CustomerList
+export default UserList

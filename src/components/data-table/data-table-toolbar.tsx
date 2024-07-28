@@ -3,13 +3,6 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Table } from "@tanstack/react-table"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-// } from "@/components/ui/dropdown"
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -17,12 +10,9 @@ import {
 } from "@/components/ui/tooltip"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { Icons } from "@/components/icons"
 import React from "react"
-import IconStatus, { statusArr } from "@/components/icon-status"
-import { pointer } from "d3"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -31,11 +21,11 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
-  const optStatus = [1, 0]
+  // const optStatus = [1, 0]
   const router = useRouter()
   const pathname = usePathname()
   const isFiltered = table.getState().columnFilters.length > 0
-  const filterStatus = table.getColumn("userStatusActive")?.getFilterValue() as boolean
+  // const filterStatus = table.getColumn("userStatusActive")?.getFilterValue() as boolean
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">

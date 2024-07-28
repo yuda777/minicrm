@@ -1,6 +1,6 @@
 "use client"
 
-import { type Table } from "@tanstack/react-table"
+import { ColumnDef, type Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,9 +12,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
+import { FIELD_NAME } from "@/config/users"
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>
+}
+
+function getTitleByAccessorKey(id: string) {
+  for (const key in FIELD_NAME) {
+    if (FIELD_NAME[key].id === id) {
+      return FIELD_NAME[key].title;
+    }
+  }
+  return undefined; // If not found, return undefined or any other default value
 }
 
 export function DataTableViewOptions<TData>({
@@ -53,7 +63,8 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {/* {column.id} */}
+                {getTitleByAccessorKey(column.id)}
               </DropdownMenuCheckboxItem>
             )
           })}

@@ -141,7 +141,8 @@ export const fetchUsers = async ({
         .leftJoin(t.tp, eq(t.tp.positionId, t.tu.positionId))
         .leftJoin(w.tu2, eq(t.tu.parentId, w.tu2.userId))
         .leftJoin(w.tp2, eq(w.tp2.positionId, w.tu2.positionId))
-        .where(and(...(queryWhere ?? [])))
+        .where(and(...(queryWhere ?? []))) //, eq(w.tu.statusActive, true)
+        // .where(and(...(queryWhere ?? []), eq(w.tu.statusActive, true))) //,
         .orderBy(
           columnOrder.isValid
             ? columnOrder.order === 'asc'
@@ -149,7 +150,7 @@ export const fetchUsers = async ({
               : desc(w[columnOrder.table][columnOrder.field])
             : desc(w.tu.createdAt),
         )
-      // .toSQL()
+      //   .toSQL()
       // console.log('userPositionWithSuperior:', userPositionWithSuperior)
 
       const totalUsers = await tx

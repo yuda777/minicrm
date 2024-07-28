@@ -180,24 +180,32 @@ export const MultiSelect = React.forwardRef<
                         <Icons.check className="h-4 w-4" />
                       </div>
                       <span>
-                        {option?.avatar &&
-                          <Avatar className="h-8 w-8 mr-2">
-                            <AvatarImage
-                              src={`/face/${option?.avatar}`}
-                              alt={""}
-                            />
-                            <AvatarFallback>
-                              <Icons.defaultUser className="h-16 w-16" aria-hidden="true" />
-                            </AvatarFallback>
-                          </Avatar>
+                        {option?.avatar ?
+                          (
+                            <div className="flex items-center">
+                              <Avatar className="h-8 w-8 mr-2">
+                                <AvatarImage
+                                  src={`/face/${option?.avatar}`}
+                                  alt={""}
+                                />
+                                <AvatarFallback>
+                                  <Icons.defaultUser className="h-16 w-16" aria-hidden="true" />
+                                </AvatarFallback>
+                              </Avatar>
+                              {option.label}
+                            </div>
+                          ) :
+                          (
+                            <Badge
+                              key={option.value}
+                              variant={option.styleId ? getColorById(option.styleId) as BadgeVariant['variant'] : 'outline'}
+                              style={{ animationDuration: `${animation}s` }}
+                            >
+                              {option.label}
+                            </Badge>
+                          )
                         }
-                        <Badge
-                          key={option.value}
-                          variant={option.styleId ? getColorById(option.styleId) as BadgeVariant['variant'] : 'outline'}
-                          style={{ animationDuration: `${animation}s` }}
-                        >
-                          {option.label}
-                        </Badge>
+
                       </span>
                     </CommandItem>
                   );

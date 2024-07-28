@@ -39,7 +39,183 @@ import { DateRange } from 'react-day-picker';
 import { MultiSelect } from "@/components/ui/multi-select";
 import { GroupOptionSchema } from '@/lib/validateJSON';
 
+// Constants for type values
+const TYPE_VALUES = {
+  OPTION: 'option',
+  STRING: 'string',
+  BOOLEAN: 'boolean',
+  NUMBER: 'number',
+  DATE: 'date',
+} as const;
 
+type TypeValueKeys = keyof typeof TYPE_VALUES;
+type TypeValue = (typeof TYPE_VALUES)[TypeValueKeys];
+
+const CompTypeValue = ({
+  index,
+  value,
+  onChange,
+  form,
+  useFieldNameWatcher,
+  configPage
+}: {
+  index: number,
+  value: FieldValueType,
+  onChange: (...event: any[]) => void,
+  form: any,
+  useFieldNameWatcher: (index: number) => string,
+  configPage: ConfigPageType[]
+}) => {
+  const fieldName = useFieldNameWatcher(index);
+  const columnWithOptionItem = findOptionData(fieldName, configPage);
+  const typeValue = form.getValues(`paramSearch.${index}.typeValue`) as TypeValue;
+  const renderInputField = () => {
+    switch (typeValue) {
+      case TYPE_VALUES.OPTION:
+        return (
+          <MultiSelect
+            options={columnWithOptionItem ? columnWithOptionItem?.optionData : []}
+            defaultValue={value as optionDataType[]}
+            styleArr={columnWithOptionItem ? columnWithOptionItem?.cellInfo : undefined}
+            onChange={onChange}
+            placeholder="Select Option"
+          />
+        )
+      case TYPE_VALUES.STRING:
+        return (
+          <Input
+            placeholder="value"
+            onChange={onChange}
+            value={value as string}
+          />
+        )
+      case TYPE_VALUES.BOOLEAN:
+        return (
+          <Select onValueChange={onChange} defaultValue={value as string}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="true">Active</SelectItem>
+              <SelectItem value="false">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        )
+      case TYPE_VALUES.NUMBER:
+        return (
+          <Input
+            min="1"
+            placeholder="Enter number"
+            type="number"
+            value={value as string}
+            onChange={onChange}
+          />
+        )
+      case TYPE_VALUES.DATE:
+        return (
+          <DatePickerWithRange
+            value={value as DateRange}
+            onChange={onChange}
+          />
+        )
+      default:
+        return (
+          <Input
+            placeholder="value"
+            onChange={onChange}
+            value={value as string}
+          />
+        )
+    }
+  }
+  return renderInputField();
+}
+const CompOperator = ({
+  index,
+  value,
+  onChange,
+  form,
+  useFieldNameWatcher,
+  configPage
+}: {
+  index: number,
+  value: FieldValueType,
+  onChange: (...event: any[]) => void,
+  form: any,
+  useFieldNameWatcher: (index: number) => string,
+  configPage: ConfigPageType[]
+}) => {
+  let operatorSelected = []
+  const fieldName = useFieldNameWatcher(index);
+  let valueDefault = undefined
+  const typeValue = form.getValues(`paramSearch.${index}.typeValue`) as TypeValue;
+  switch (typeValue) {
+    case TYPE_VALUES.OPTION:
+      operatorSelected = operatorOptions.filter(operator => ["inArray"].includes(operator.value));
+      valueDefault = "inArray"
+      break;
+    case TYPE_VALUES.STRING:
+      operatorSelected = operatorOptions.filter(operator => ["eq", "ilike"].includes(operator.value));
+      valueDefault = "ilike"
+      break;
+    case TYPE_VALUES.BOOLEAN:
+      operatorSelected = operatorOptions.filter(operator => ["eq"].includes(operator.value));
+      valueDefault = "eq"
+      break;
+    case TYPE_VALUES.NUMBER:
+      operatorSelected = operatorOptions.filter(operator => ["eq", "lt", "gt", "lte", "gte", "between"].includes(operator.value));
+      valueDefault = "eq"
+      break;
+    case TYPE_VALUES.DATE:
+      operatorSelected = operatorOptions.filter(operator => ["between"].includes(operator.value));
+      valueDefault = "between"
+      break;
+    default:
+      operatorSelected = operatorOptions
+      break;
+  }
+
+  return (
+    <Dropdown
+      placeholder="select operator"
+      onChange={(v) => onChange(v)}
+      options={operatorSelected}
+      value={valueDefault}
+    />
+  )
+}
+
+const findOptionData = (identifier: string, config: ConfigPageType[]) => {
+  const [alias, column] = identifier.split('.');
+  for (const tableConfig of config) {
+    if (tableConfig.alias === alias) {
+      return tableConfig.column.find(col => col.value === column);
+    }
+  }
+  return null;
+};
+const findTableAndColumnDataType = (identifier: string, config: ConfigPageType[]) => {
+  const [alias, column] = identifier.split('.');
+  for (const tableConfig of config) {
+    if (tableConfig.alias === alias) {
+      const columnConfig = tableConfig.column.find(col => col.value === column);
+      if (columnConfig) {
+        return { table: tableConfig.table, columnDataType: columnConfig.columnDataType };
+      }
+    }
+  }
+  return null;
+};
+const generateOptions = (config: ConfigPageType[]) => {
+  return config.flatMap((tableConfig) =>
+    tableConfig.column.map((col) => ({
+      label: col.label,
+      value: `${tableConfig.alias}.${col.value}`,
+    }))
+  );
+};
 interface AdvancedSearchProps {
   onSearch: (dataSubmit: IParamSearch) => void;
   configPage: ConfigPageType[]
@@ -49,6 +225,7 @@ const AdvanceSearch = ({
   onSearch,
   configPage
 }: AdvancedSearchProps) => {
+
   const searchSchema = GroupOptionSchema()
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
@@ -62,61 +239,27 @@ const AdvanceSearch = ({
     }
   });
 
-  const generateOptions = (config: ConfigPageType[]) => {
-    return config.flatMap((tableConfig) =>
-      tableConfig.column.map((col) => ({
-        label: col.label,
-        value: `${tableConfig.alias}.${col.value}`,
-      }))
-    );
-  };
-  const findTableAndColumnDataType = (identifier: string, config: ConfigPageType[]) => {
-    const [alias, column] = identifier.split('.');
-    for (const tableConfig of config) {
-      if (tableConfig.alias === alias) {
-        const columnConfig = tableConfig.column.find(col => col.value === column);
-        if (columnConfig) {
-          return { table: tableConfig.table, columnDataType: columnConfig.columnDataType };
-        }
-      }
-    }
-    return null;
-  };
-  const findOptionData = (identifier: string, config: ConfigPageType[]) => {
-    const [alias, column] = identifier.split('.');
-    for (const tableConfig of config) {
-      if (tableConfig.alias === alias) {
-        return tableConfig.column.find(col => col.value === column);
-      }
-    }
-    return null;
-  };
   const columnList = generateOptions(configPage)
 
-  // const paramSearch = form.watch(`paramSearch`);
   const { fields, remove, append } = useFieldArray({
     name: "paramSearch",
     control: form.control,
   })
-  // const useOperator = useWatch({
-  //   control: form.control,
-  //   name: "paramSearch.0.operator",
-  // });
-  // console.log("paramSearch:", paramSearch);
-  // const fieldNames = useWatch({
-  //   control: form.control,
-  //   name: "paramSearch",
-  // }).map(field => field.fieldName);
+
   const useFieldNameWatcher = (index: number) => {
+
     return useWatch({
       control: form.control,
       name: `paramSearch.${index}.fieldName`,
     });
   };
-  // const useFieldName = useWatch({
-  //   control: form.control,
-  //   name: "paramSearch.0.fieldName",
-  // })
+  const useOperatorWatcher = (index: number) => {
+    return useWatch({
+      control: form.control,
+      name: `paramSearch.${index}.operator`,
+    });
+  };
+
   const onRemoveClick = (index: number) => {
     remove(index);
   };
@@ -130,123 +273,6 @@ const AdvanceSearch = ({
 
     onSearch(dataSubmit);
   }
-
-  const componentOperator = (index: number) => {
-    let operatorSelected = []
-    let valueDefault = undefined
-    switch (form.getValues(`paramSearch.${index}.typeValue`)) {
-      case "option":
-        operatorSelected = operatorOptions.filter(operator => ["inArray"].includes(operator.value));
-        valueDefault = "inArray"
-        break;
-      case "string":
-        operatorSelected = operatorOptions.filter(operator => ["eq", "ilike"].includes(operator.value));
-        valueDefault = "ilike"
-        break;
-      case "boolean":
-        operatorSelected = operatorOptions.filter(operator => ["eq"].includes(operator.value));
-        valueDefault = "eq"
-        break;
-      case "number":
-        operatorSelected = operatorOptions.filter(operator => ["eq", "lt", "gt", "lte", "gte", "between"].includes(operator.value));
-        valueDefault = "eq"
-        break;
-      case "date":
-        operatorSelected = operatorOptions.filter(operator => ["between"].includes(operator.value));
-        valueDefault = "between"
-        break;
-      default:
-        operatorSelected = operatorOptions
-        break;
-    }
-    return {
-      operatorSelected,
-      valueDefault
-    }
-  }
-
-  const CompTypeValue = ({
-    index,
-    value,
-    onChange,
-    // cellInfo
-  }: {
-    index: number,
-    value: FieldValueType,
-    onChange: (...event: any[]) => void,
-    // cellInfo?: CellInfoType
-  }) => {
-    let InputVield;
-    const fieldName = useFieldNameWatcher(index);
-    // const tableName = paramSearch[index].tableName
-    // const fieldName = form.getValues(`paramSearch.${index}.fieldName`)
-    const columnWithOptionItem = findOptionData(fieldName, configPage);
-
-    switch (form.getValues(`paramSearch.${index}.typeValue`)) {
-      case "option":
-        InputVield = (
-          <MultiSelect
-            options={columnWithOptionItem ? columnWithOptionItem?.optionData : []}
-            defaultValue={value as optionDataType[]}
-            styleArr={columnWithOptionItem ? columnWithOptionItem?.cellInfo : undefined}
-            onChange={onChange}
-            placeholder="Select Option"
-          // setIsPopoverOpen={setIsPopoverOpen}
-          // isPopoverOpen={isPopoverOpen}
-          />
-        )
-        break;
-      case "string":
-        InputVield = (<Input
-          placeholder="value"
-          onChange={onChange}
-          value={value as string}
-        />)
-        break;
-      case "boolean":
-        InputVield = (
-          <Select onValueChange={onChange} defaultValue={value as string}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="true">Active</SelectItem>
-              <SelectItem value="false">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        )
-        break;
-      case "number":
-        InputVield = (
-          <Input
-            min="1"
-            placeholder="Enter number"
-            type="number"
-            value={value as string}
-            onChange={onChange}
-          />
-        )
-        break;
-      case "date":
-        InputVield = (
-          <DatePickerWithRange
-            value={value as DateRange}
-            onChange={onChange}
-          />
-        )
-        break;
-      default:
-        InputVield = (<Input
-          placeholder="value"
-          onChange={onChange}
-          value={value as string}
-        />)
-        break;
-    }
-    return InputVield
-  }
   const classFormMessage = "text-red-400 absolute bg-background border py-1 px-2"
 
   return (
@@ -255,7 +281,7 @@ const AdvanceSearch = ({
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
         className="w-full space-y-1">
         {fields.map((field, index) => {
-          const { operatorSelected, valueDefault } = componentOperator(index)
+          // const { operatorSelected, valueDefault } = componentOperator(index)
           return (
             <div
               key={field.id}
@@ -292,6 +318,7 @@ const AdvanceSearch = ({
                         <Dropdown
                           placeholder="select column"
                           onChange={(value) => {
+                            console.log("value", value);
                             const { table, columnDataType } = findTableAndColumnDataType(value, configPage)
                             if (table && columnDataType) {
                               form.setValue(`paramSearch.${index}.tableName`, table || "");
@@ -317,11 +344,13 @@ const AdvanceSearch = ({
                   <div className='flex'>
                     <FormItem>
                       <FormControl>
-                        <Dropdown
-                          placeholder="select operator"
+                        <CompOperator
+                          index={index}
                           onChange={(v) => field.onChange(v)}
-                          options={operatorSelected}
-                          value={valueDefault}
+                          value={field.value}
+                          form={form}
+                          useFieldNameWatcher={useFieldNameWatcher}
+                          configPage={configPage}
                         />
                       </FormControl>
                       {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.operator && (
@@ -341,13 +370,16 @@ const AdvanceSearch = ({
                       <FormControl>
                         <CompTypeValue
                           index={index}
-                          onChange={field.onChange}
+                          onChange={(v) => field.onChange(v)}
                           value={field.value}
+                          form={form}
+                          useFieldNameWatcher={useFieldNameWatcher}
+                          configPage={configPage}
                         />
                       </FormControl>
-                      {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.fieldValue && (
+                      {/* {form.formState.isSubmitted && form.formState.errors.paramSearch?.[index]?.fieldValue && (
                         <FormMessage className={classFormMessage} />
-                      )}
+                      )} */}
                     </FormItem>
                   </div>
                 )}
@@ -378,6 +410,7 @@ const AdvanceSearch = ({
               e.stopPropagation();
               e.preventDefault()
               append({ condition: "and", fieldName: "", operator: undefined, fieldValue: [] })
+
               form.clearErrors()
             }}>
             <Icons.add
