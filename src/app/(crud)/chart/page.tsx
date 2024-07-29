@@ -18,10 +18,10 @@ export default function ChartPage({ }: Props) {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Chart Real-Time Performance Employee</CardTitle>
+        <CardTitle className="text-2xl">Live Performance Dashboard</CardTitle>
         <CardDescription>
           <div className='flex space-x-2'>
-            <div>Using: Recharts and</div>
+            <div>Using Recharts and</div>
             <Link
               href={"https://github.com/yuda777/socket-io-postgres.git"}
               target='_blank'

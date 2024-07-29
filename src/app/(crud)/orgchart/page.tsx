@@ -16,9 +16,9 @@ export default function OrgChart
   return (
     <Card>
       <CardHeader className="s  pace-y-1">
-        <CardTitle className="text-2xl">User List</CardTitle>
+        <CardTitle className="text-2xl">Organizational Structure</CardTitle>
         <CardDescription>
-          Choose user name to edit
+          Use the chart below to navigate through the various levels of our organization
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
