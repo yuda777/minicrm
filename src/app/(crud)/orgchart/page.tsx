@@ -15,7 +15,7 @@ export default function OrgChart
   ({ }: Props) {
   return (
     <Card>
-      <CardHeader className="s  pace-y-1">
+      <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Organizational Structure</CardTitle>
         <CardDescription>
           Use the chart below to navigate through the various levels of our organization

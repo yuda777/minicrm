@@ -58,23 +58,56 @@ To set up this project locally, follow these steps:
 
 ## Project Highlights
 
-- **Responsive Design:** The layout is optimized for both desktop and mobile views, ensuring a consistent user experience.
-- **Data Management:** Efficient handling of CRUD operations with PostgreSQL and DrizzleORM.
-- **Visualization:** d3-org-chart provides a visual representation of hierarchical data, making it easy to understand complex structures.
+**miniCRM** is a demonstration of various web development skills, integrating both frontend and backend technologies. Key highlights include:
+
+1. **User Management:**
+
+   - Efficiently manage user and customer information with intuitive forms and interfaces.
+
+2. **Organizational Chart Visualization:**
+
+   - Visualize company structure dynamically using d3-org-chart, providing a clear view of the hierarchical organization.
+
+3. **Real-Time Performance Metrics:**
+
+   - Monitor user activity and system performance in real-time with Recharts and Socket.IO, offering immediate insights into key metrics.
+
+4. **Advanced Search Functionality:**
+
+   - Powerful search capabilities allowing for complex queries using "and," "or," and "not" conditions.
+   - Multi-item search supported, enabling users to refine search results effectively.
+   - Built with react-hook-form and Zod validation for robust form handling and validation, ensuring accurate and secure data input.
+
+5. **Responsive Design:**
+   - A seamless user experience across all devices, crafted with Tailwind CSS for responsive layouts and components.
+
+These features demonstrate the project's versatility and the breadth of skills applied, from real-time data handling to advanced user interactions.
 
 ## Screenshots
 
-![User Management](/public/screenshot/sc1.png)
-_Example of the User Management interface_
+Here are some key features and interfaces of the **miniCRM** project:
 
-![Org Chart](/public/screenshot/sc2.png)
-_Organizational Chart showcasing company structure_
+### 1. User Management Interface
 
-![Org Chart](/public/screenshot/sc3.png)
-_Organizational Chart showcasing company structure_
+![User Management](/public/screenshot/sc6.png)
+_Manage user information easily with this intuitive table interface._
+![Advanced Search](/public/screenshot/sc2.png)
+_Perform complex queries with the advanced search feature, including "and," "or," and "not" conditions for detailed results._
 
-![Org Chart](/public/screenshot/sc4.png)
-_Organizational Chart showcasing company structure_
+### 2. Organizational Chart
+
+![Org Chart](/public/screenshot/sc1.png)
+_Visualize the company hierarchy with an interactive organizational chart._
+
+### 3. Upload and Excel Mapping Field
+
+![Performance Metrics](/public/screenshot/sc3.png)
+_Upload Excel and mapping field._
+
+### 4. Real-Time Performance Metrics
+
+![Performance Metrics](/public/screenshot/sc4.png)
+_Real-time performance dashboard with live updates on user activity._
 
 ## Future Enhancements
 

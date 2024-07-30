@@ -63,7 +63,7 @@ function useDataUser(userId?: number) {
 
   const getHeadNPosUser = async () => {
     try {
-      const userPosition = await getPosUser(userId)
+      const userPosition = await getPosUser()
       const headUser: UserWithPosition[] = await getHeadUser();
       setHeadNPos({ userPosition, headUser });
     } catch (error) {
@@ -96,7 +96,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
     resolver: zodResolver(userSchema),
     mode: "onSubmit",
     defaultValues: {
-      name: user?.name || "",
+      userName: user?.userName || "",
       parentId: user?.parentId ?? undefined,
       positionId: user?.positionId ?? undefined,
       photo: user?.photo || null,
@@ -225,7 +225,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
             <div className='grid gap-6 lg:grid-cols-2 xl:grid-cols-3'>
               <FormField
                 control={form.control}
-                name="name"
+                name="userName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -338,7 +338,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                                 <div className="mr-auto">
                                   {selectedSuperior?.titleDesc ?
                                     <>
-                                      {selectedSuperior.name}
+                                      {selectedSuperior.userName}
                                       <Badge
                                         variant={selectedSuperior?.departementCode ?
                                           colorScheme(selectedSuperior.departementCode)
@@ -361,7 +361,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                               <CommandGroup>
                                 {headNPos.headUser.map((val) => (
                                   <CommandItem
-                                    value={`${val.name} ${val.titleDesc}`}
+                                    value={`${val.userName} ${val.titleDesc}`}
                                     key={val.id}
                                     onSelect={() => {
                                       form.setValue("parentId", val.id)
@@ -376,7 +376,7 @@ const AddNEditUserForm: FC<FrmInputProps> = ({ user }) => {
                                           : "opacity-0"
                                       )}
                                     />
-                                    {val.name}
+                                    {val.userName}
                                     <Badge
                                       variant={val.titleDesc ? val.departementCode ? colorScheme(val.departementCode) : 'gray' : "gray"}
                                       className="capitalize whitespace-nowrap ml-2" >
