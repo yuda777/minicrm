@@ -175,18 +175,6 @@ export const customerStatus = pgTable('customer_status', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at'),
 })
-export const test1 = pgTable('test1', {
-  id1: serial('id1').primaryKey().notNull(),
-  statusName1: varchar('status_name1', { length: 255 }).notNull(),
-})
-export const test2 = pgTable('test2', {
-  id2: serial('id2').primaryKey().notNull(),
-  statusName2: varchar('status_name2', { length: 255 }).notNull(),
-})
-export const test3 = pgTable('test3', {
-  id3: serial('id3').primaryKey().notNull(),
-  statusName3: varchar('status_name3', { length: 255 }).notNull(),
-})
 
 export const customerStatusRelation = relations(customerStatus, ({ many }) => ({
   status: many(customer),
@@ -203,12 +191,8 @@ export const tableMapping = {
   users: users,
   position: position,
   customerStatus: uploadMapping,
-  test1: test1,
-  test2: test2,
-  test3: test3,
 }
 export type CustomerStatus = InferSelectModel<typeof customerStatus>
 
-export type NewUser2 = InferSelectModel<typeof position & typeof users>
 export type NewUser = InferSelectModel<typeof users> &
   InferSelectModel<typeof position>

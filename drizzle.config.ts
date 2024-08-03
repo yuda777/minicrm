@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import type { Config } from 'drizzle-kit'
+import { env } from '@/env.mjs'
 
 export default {
   schema: './src/db/schema.ts',
@@ -14,8 +15,3 @@ export default {
   },
   breakpoints: true,
 } satisfies Config
-
-// password: process.env.PGPASSWORD,
-// host: process.env.PGHOST,
-// user: process.env.PGUSER,
-// database: process.env.PGDATABASE,

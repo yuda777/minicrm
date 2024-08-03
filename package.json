@@ -9,6 +9,7 @@
     "lint": "next lint",
     "drizzle:introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
     "drizzle:generate": "drizzle-kit generate:pg --schema=./src/db/schema.ts",
+    "drizzle:deploy": "npx ts-node --files ./src/db/migrator.ts",
     "drizzle:push": "drizzle-kit push:pg",
     "drizzle:seed": "ts-node ./src/db/seed.ts",
     "studio": "drizzle-kit studio --port 3333"

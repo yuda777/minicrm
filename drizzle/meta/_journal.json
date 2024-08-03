@@ -1,20 +1,5 @@
 {
   "version": "5",
   "dialect": "pg",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1703238659416,
-      "tag": "0000_rapid_wild_child",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1703238682033,
-      "tag": "0001_purple_vulture",
-      "breakpoints": true
-    }
-  ]
+  "entries": []
 }
