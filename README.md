@@ -40,12 +40,14 @@ To set up this project locally, follow these steps:
    npm install
    ```
 
-3. **Environment Configuration:**
-   Set up your environment variables by creating a `.env.local` file:
+3. **Configure your environment variables:**
 
-   ```
-   DATABASE_URL=your_database_url_here
-   ```
+   - Copy the `.env.example` file to create your local `.env.local` file:
+     ```bash
+     cp .env.example .env.local
+     ```
+   - Open the `.env.local` file and update the values to match your local setup.
+   - Ensure that you replace placeholders with your actual PostgreSQL credentials and other configuration details.
 
 4. **Launch the development server:**
 
@@ -107,15 +109,20 @@ _Upload Excel and mapping field._
 ### 4. Real-Time Performance Metrics
 
 ![Performance Metrics](/public/screenshot/sc4.png)
-_Real-time performance dashboard with live updates on user activity._
+_Real-time performance dashboard with live updates._
 
-## Future Enhancements
+### Future Enhancements
 
-While this project is a portfolio piece, there are several features that could be added:
+1. **Advanced Reporting:**
 
-- Advanced user permissions and roles
-- Integrations with third-party services
-- Enhanced data analytics and reporting
+   - **Export to PDF and Excel:** Generate detailed reports and export data with summaries and charts.
+
+2. **Calendar Scheduling:**
+
+   - **Event Management and Tagging:** Schedule events and use tags for better organization.
+
+3. **Real-Time Chat:**
+   - **User Messaging:** Enable instant communication between users within the application.
 
 ## Contributions
 
@@ -123,7 +130,7 @@ Contributions are welcome! If you have ideas or improvements, feel free to fork 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Acknowledgements
 
